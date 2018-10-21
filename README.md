@@ -2,7 +2,7 @@
 
 - Nim HTML DSL, Domain Specific Language for HTML.
 
-![HTML DSL](temp.png)
+![HTML DSL](https://raw.githubusercontent.com/juancarlospaco/nim-html-dsl/master/temp.png "HTML for Cats")
 
 
 # Design
