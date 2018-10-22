@@ -187,25 +187,16 @@ func transpile*(this: HtmlNode): string =
 
 
 when isMainModule:
-  import terminal
   var x = 2
   let author = "Juan"
 
   html page:
     head:
-      title(if x==2:"two" else:"nottwo")
-      meta("author", "name=author")
+      title("Title")
     body:
-      p("hello")
-      p("world")
+      p("Hello")
+      p("World")
       dv:
-        p "from a"
-        dv:
-          p "dsl"
-          a:
-            "/"
-            "home"
-            class="link"
+        p "Example"
 
-  styled_echo fgGreen, bgBlack, transpile(page())
-  # echo len(transpile(page()))
+  echo transpile(page())
