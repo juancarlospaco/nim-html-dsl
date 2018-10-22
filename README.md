@@ -12,15 +12,48 @@ import html_dsl
 
 html page:
   head:
-    title("title")
+    title("Title")
   body:
-    p("hello")
-    p("world")
+    p("Hello")
+    p("World")
     dv:
       p "Example"
 
 echo transpile(page())
 ```
+
+<details>
+  <summary>Click to see Output</summary>
+
+Build for Development:
+
+```html
+<!DOCTYPE html>
+  <html class='has-navbar-fixed-top' >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+  </head>
+  <body class='has-navbar-fixed-top' >
+    <p >Hello</p>
+    <p >World</p>
+    <div>
+      <p>Example</p>
+    </div>
+  </body>
+</html>
+<!-- Nim 0.19.0 -->
+
+```
+
+Build for Release:
+
+```html
+<!DOCTYPE html><html class='has-navbar-fixed-top'><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Title</title></head><body class='has-navbar-fixed-top'><p>Hello</p><p>World</p><div><p>Example</p></div></body></html>
+```
+
+</details>
 
 
 # Design
