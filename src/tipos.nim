@@ -631,35 +631,59 @@ func render(this: HtmlNode): string {.discardable.} =
       when defined(release): "<title>" & this.val.strip.capitalizeAscii & "</title>"
       else: "<title>" & this.val & "</title>\n"
   of nkmeta:
-    result = fmt"<meta {atributos}>" & sepa
+    result =
+      when defined(release): fmt"<meta{atributos}>"
+      else: fmt"<meta {atributos}>" & "\n"
   of nkbody:
-    result = fmt"<body class='has-navbar-fixed-top'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<body class='has-navbar-fixed-top'{atributos}>"
+      else: fmt"<body class='has-navbar-fixed-top'{atributos}>" & "\n"
   of nkArticle:
-    result = fmt"<article class='message'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<article class='message'{atributos}>"
+      else: fmt"<article class='message'{atributos}>" & "\n"
   of nkButton:
-    result = fmt"<button class='button is-light is-rounded btn tooltip'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<button class='button is-light is-rounded btn tooltip'{atributos}>"
+      else: fmt"<button class='button is-light is-rounded btn tooltip'{atributos}>" & "\n"
   of nkDetails:
-    result = fmt"<details class='message is-dark'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<details class='message is-dark'{atributos}>"
+      else: fmt"<details class='message is-dark'{atributos}>" & "\n"
   of nkDialog:
-    result = fmt"<dialog class='notification is-rounded modal'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<dialog class='notification is-rounded modal'{atributos}>"
+      else: fmt"<dialog class='notification is-rounded modal'{atributos}>" & "\n"
   of nkFooter:
-    result = fmt"<footer class='footer is-fullwidth'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<footer class='footer is-fullwidth'{atributos}>"
+      else: fmt"<footer class='footer is-fullwidth'{atributos}>" & "\n"
   of nkH1:
-    result = fmt"<h1 class='title'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<h1 class='title'{atributos}>"
+      else: fmt"<h1 class='title'{atributos}>" & "\n"
   of nkImg:
-    result = fmt"<img class='image img-responsive'{atributos}\>" & sepa
+    result =
+      when defined(release): fmt"<img class='image img-responsive'{atributos}\>"
+      else: fmt"<img class='image img-responsive'{atributos}\>" & "\n"
   of nkLabel:
-    result = fmt"<label class='label form-label'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<label class='label form-label'{atributos}>"
+      else: fmt"<label class='label form-label'{atributos}>" & "\n"
   of nkMeter:
-    result = fmt"<meter class='progress is-small bar-item' role='progressbar'{atributos}>" & sepa
+    result =
+      when defined(release): fmt"<meter class='progress is-small bar-item' role='progressbar'{atributos}>"
+      else: fmt"<meter class='progress is-small bar-item' role='progressbar'{atributos}>" & "\n"
   of nkComment:
     result =
       when defined(release): "<!-- " & this.text.strip
-      else: "\n\n<!-- " & this.text
+      else: "\n\n<!--  " & this.text
   else:
     var tagy = $this.kind
     tagy = tagy.replace("nk", "").toLowerAscii
-    result = fmt"<{tagy}{atributos}>{this.text}</{tagy}>" & sepa
+    result =
+      when defined(release): fmt"<{tagy}{atributos}>{this.text}</{tagy}>"
+      else: fmt"<{tagy}{atributos}>{this.text}</{tagy}>" & "\n"
 
 func close(this: HtmlNode): string {.discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
@@ -671,8 +695,10 @@ func close(this: HtmlNode): string {.discardable.} =
   of nkComment:
     result =
       when defined(release): " -->"
-      else: " -->\n\n"
+      else: "  -->\n\n"
   else:
     var tagy = $this.kind
     tagy = tagy.replace("nk", "").toLowerAscii
-    result = "</" & tagy & ">" & sepa
+    result =
+      when defined(release): "</" & tagy & ">"
+      else: "</" & tagy & ">\n"
