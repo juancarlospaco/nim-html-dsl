@@ -12,4 +12,4 @@
 - 255 Levels of indentation maximum.
 - Minified when build for Release, else Pretty-Printed.
 - No XHTML, dont be Valid XML but be HTML5.
-- HTML Comments are supported.
+- HTML Comments supported.
