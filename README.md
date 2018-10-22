@@ -5,6 +5,24 @@
 ![HTML DSL](https://raw.githubusercontent.com/juancarlospaco/nim-html-dsl/master/temp.png "HTML for Cats")
 
 
+# Use
+
+```nim
+import html_dsl
+
+html page:
+  head:
+    title("title")
+  body:
+    p("hello")
+    p("world")
+    dv:
+      p "Example"
+
+echo transpile(page())
+```
+
+
 # Design
 
 - [Bulma CSS ready](https://bulma.io), [Spectre CSS ready](https://picturepan2.github.io/spectre/getting-started.html).
