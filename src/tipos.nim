@@ -315,8 +315,6 @@ func attributter(tagy: HtmlNode): string =
   ## Render to string all attributtes for all HTML tags. Uses Branch Prediction.
   # TODO: Find the best way to Optimize this.
   var atributes = @[" "]
-  if unlikely(tagy.contenteditable != false):
-    atributes.add """contenteditable="true" """
   if unlikely(tagy.width != 0):
     atributes.add fmt"""width="{tagy.width}" """
   if unlikely(tagy.height != 0):
@@ -615,6 +613,9 @@ func attributter(tagy: HtmlNode): string =
     atributes.add fmt"""rows="{tagy.rows}" """
   if tagy.wrap != "":
     atributes.add fmt"""wrap="{tagy.wrap}" """
+  when not defined(release):  # No one uses contenteditable on Prod.
+    if tagy.contenteditable != false:
+      atributes.add """contenteditable="true" """
   result =
     when defined(release): atributes.join.strip(trailing=true)
     else:                  atributes.join
