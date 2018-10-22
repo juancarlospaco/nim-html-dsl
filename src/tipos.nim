@@ -1,8 +1,13 @@
 import strutils, strformat
 
 const
-  sepa = when defined(release): "" else: "\n"  ## Line separator.
-  basic_head_tags = """<meta charset="utf-8">""" & sepa & """<meta name="viewport" content="width=device-width,initial-scale=1">""" & sepa  ## Basic meta tags that all frameworks recommend nowadays.
+  basic_head_tags =
+    when defined(release):
+      """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">"""
+    else:
+      """<meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      """  ## Basic meta tags that all frameworks recommend nowadays.
 
 type HtmlNodeKind* = enum  ## All HTML Tags, taken from Mozilla docs, including Comment.
   nkA,
