@@ -13,3 +13,4 @@
 - Minified when build for Release, else Pretty-Printed.
 - No XHTML, dont be Valid XML but be HTML5.
 - HTML Comments supported.
+- Functional Programming, all functions are `func`.
