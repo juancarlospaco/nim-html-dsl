@@ -4,6 +4,8 @@
 
 ![HTML DSL](https://raw.githubusercontent.com/juancarlospaco/nim-html-dsl/master/temp.png "HTML for Cats")
 
+**This project still WIP**
+
 
 # Use
 
