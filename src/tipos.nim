@@ -626,7 +626,7 @@ func render(this: HtmlNode): string {.discardable.} =
   of nkhtml:
     result =
       when defined(release): "<!DOCTYPE html>" & fmt"<html class='has-navbar-fixed-top'{atributos}>"
-      else: "<!DOCTYPE html>\n  " & fmt"<html class='has-navbar-fixed-top'{atributos}>\n"
+      else: "<!DOCTYPE html>\n  " & fmt"<html class='has-navbar-fixed-top'{atributos}>" & "\n"
   of nkhead:
     result =
       when defined(release): "<head>" & basic_head_tags
