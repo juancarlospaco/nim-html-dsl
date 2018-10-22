@@ -60,8 +60,8 @@ Build for Release:
 
 - [Bulma CSS ready](https://bulma.io), [Spectre CSS ready](https://picturepan2.github.io/spectre/getting-started.html).
 - HTML5, UTF-8, Responsive, all Tags supported.
+- Minified when build for Release, Pretty-Printed when build for Development.
+- Functional Programming, no side effects, all functions are `func`.
 - 255 Levels of indentation maximum.
-- Minified when build for Release, else Pretty-Printed.
-- No XHTML, dont be Valid XML but be HTML5.
 - HTML Comments supported.
-- Functional Programming, all functions are `func`.
+- No XHTML, dont be Valid XML but be HTML5.
