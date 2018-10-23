@@ -105,8 +105,11 @@ template indent_if_needed(thingy, indentation_level: untyped): untyped =
   when defined(release): thingy           # Release, Minified for Performance.
   else: indent(thingy, indentation_level) # Development, use the Indentations.
 
-func render*(this: HtmlNode): string =
+var conta: int
+proc render*(this: HtmlNode): string =
   ## Render HtmlNode with indentation return string.
+  if this.kind in [nkMeta, nkLink]:
+    debugEcho "ERROR"
   var indentation_level: byte   # indent level, 0 ~ 255.
   case this.kind
   of nkHtml:                    # <html>
@@ -121,10 +124,10 @@ func render*(this: HtmlNode): string =
     inc indentation_level
     if this.meta.len > 0:
       for meta_tag in this.meta:  # <meta ... >
-        result &= indent_if_needed(render(meta_tag), indentation_level)
+        result &= indent_if_needed(open_tag(meta_tag), indentation_level)
     if this.link.len > 0:
       for link_tag in this.link:  # <link ... >
-        result &= indent_if_needed(render(link_tag), indentation_level)
+        result &= indent_if_needed(open_tag(link_tag), indentation_level)
     result &= indent_if_needed(open_tag(this.title), indentation_level)
     dec indentation_level
     result &= close_tag this
@@ -139,6 +142,7 @@ func render*(this: HtmlNode): string =
           result &= indent_if_needed(open_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
+
   of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
      nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
      nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
@@ -161,7 +165,7 @@ func render*(this: HtmlNode): string =
     dec indentation_level
     result &= close_tag this
   else:
-    debugEcho toUpperAscii($this.kind)
+    debugEcho "render() else: " & toUpperAscii($this.kind)
 
 
 when isMainModule:
@@ -169,11 +173,14 @@ when isMainModule:
     head:
       title "Title"
       meta "foo", "bar"
-      link "href", hreflang="hreflang", crossorigin="crossorigin", integrity="integrity", media="media", referrerpolicy="referrerpolicy", sizes="sizes"
+      link "href"
     body:
       p("Hello")
       p("World")
       dv:
-        p "Example"
+        p("Example")
 
   echo render(page())
+
+
+# , hreflang="hreflang", crossorigin="crossorigin", integrity="integrity", media="media", referrerpolicy="referrerpolicy", sizes="sizes"

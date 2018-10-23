@@ -519,7 +519,6 @@ func attributter(tagy: HtmlNode): string =
     atributes.add "referrerpolicy=\"" & tagy.referrerpolicy & "\" "
   if tagy.sizes.len > 0:
     atributes.add "sizes=\"" & tagy.sizes & "\" "
-
   when not defined(release):  # No one uses contenteditable on Prod.
     if tagy.contenteditable:
       atributes.add """contenteditable="true" """
@@ -582,8 +581,8 @@ func open_tag(this: HtmlNode): string {.discardable.} =
       else: "<h1 class='title'" & atributos & ">\n"
   of nkImg:
     result =
-      when defined(release): "<img class='image img-responsive'" & atributos & "\\>"
-      else: "<img class='image img-responsive'" & atributos & "\\>\n"
+      when defined(release): "<img class='image img-responsive'" & atributos & ">"
+      else: "<img class='image img-responsive'" & atributos & ">\n"
   of nkLabel:
     result =
       when defined(release): "<label class='label form-label'" & atributos & ">"
@@ -597,11 +596,12 @@ func open_tag(this: HtmlNode): string {.discardable.} =
       when defined(release): "<!-- " & this.text.strip & " -->"
       else: "\n\n<!--  " & this.text & "  -->\n\n"
   else:
+    debugEcho "open_tag() else: " & $this.kind
     var tagy = $this.kind
     tagy = tagy[2 ..< len(tagy)].toLowerAscii # remove "nk" from string
     result =
-      when defined(release): "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">"
-      else: "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">\n"
+      when defined(release): "<" & tagy & atributos & ">" & this.text
+      else: "<" & tagy & atributos & ">" & this.text
 
 func close_tag(this: HtmlNode): string {.discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
@@ -610,14 +610,20 @@ func close_tag(this: HtmlNode): string {.discardable.} =
     result =
       when defined(release): "</html>"
       else: "</html>\n<!-- Nim " & NimVersion & " -->\n"
+  of nkComment:
+    result =
+      when defined(release): " -->"
+      else: "  -->\n\n"
+  of nkTitle, nkMeta, nkLink, nkImg:
+    result = ""  # These tags dont need Closing Tag.
   of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
       nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
       nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
       nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
-      nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI, nkImg,
+      nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI,
       nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
       nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
-      nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
+      nkPicture, nkPre, nkP, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
       nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
       nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
       nkTrack, nkTt, nkU, nkUl, nkBody, nkHead:
@@ -627,4 +633,9 @@ func close_tag(this: HtmlNode): string {.discardable.} =
       when defined(release): "</" & tagy & ">"
       else: "</" & tagy & ">\n"
   else:
-    debugEcho toUpperAscii($this.kind)
+    var tagy = $this.kind
+    tagy = tagy[2 ..< len(tagy)].toLowerAscii
+    result =
+      when defined(release): "</" & tagy & ">"
+      else: "</" & tagy & ">\n"
+    debugEcho "close_tag() else: " & toUpperAscii($this.kind)
