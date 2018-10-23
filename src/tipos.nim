@@ -25,7 +25,7 @@ type HtmlNodeKind* = enum  ## All HTML Tags, taken from Mozilla docs, +Comment.
   nkTh, nkThead, nkTime, nkTitle, nkTr, nkTrack, nkTt, nkU, nkUl, nkVar,
   nkVideo, nkWbr, nkComment
 
-type HtmlNode* = ref object  ## Base HTML Tag Object type.
+type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
   contenteditable: bool
   width: int
   height: int
@@ -188,8 +188,7 @@ type HtmlNode* = ref object  ## Base HTML Tag Object type.
     title: HtmlNode
     meta: seq[HtmlNode]
     link: seq[HtmlNode]
-  else:
-    discard
+  else: discard
 
 
 # func toJson*(this: HtmlNode): string =
