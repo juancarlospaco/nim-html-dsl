@@ -21,7 +21,7 @@ html page:
     dv:
       p "Example"
 
-echo transpile(page())
+echo render(page())
 ```
 
 <details>
