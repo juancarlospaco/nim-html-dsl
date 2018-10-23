@@ -77,7 +77,7 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
 
 func newHtml*(head, body: HtmlNode): HtmlNode =
   ## Create a new ``<html>`` tag Node, containing a ``<head>`` and ``<body>``.
-  HtmlNode(kind: nkHtml, head: head, body: body)
+  HtmlNode(kind: nkHtml, head: head, body: body) # Head & Body have childrens.
 
 macro html*(name: untyped, inner: untyped): typed =
   ## Macro to create a new call to ``newHtml()``, passing Head and Body as arg.
