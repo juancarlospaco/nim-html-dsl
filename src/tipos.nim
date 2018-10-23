@@ -512,7 +512,7 @@ func attributter(tagy: HtmlNode): string =
     when defined(release): atributes.join.strip(trailing=true)
     else:                  atributes.join
 
-func render(this: HtmlNode): string {.discardable.} =
+func render_tag(this: HtmlNode): string {.discardable.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
   let atributos = attributter(this)
   case this.kind
@@ -583,7 +583,7 @@ func render(this: HtmlNode): string {.discardable.} =
       when defined(release): "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">"
       else: "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">\n"
 
-func close(this: HtmlNode): string {.discardable.} =
+func close_tag(this: HtmlNode): string {.discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
   case this.kind
   of nkhtml:
