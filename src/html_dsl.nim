@@ -128,7 +128,7 @@ template render_indent(thingy, indentation_level: untyped): untyped =
 
 func render*(this: HtmlNode): string =
   ## Render HtmlNode with indentation return string.
-  var indentation_level: byte # indent level, 0 ~ 255.
+  var indentation_level: byte   # indent level, 0 ~ 255.
   case this.kind
   of nkhtml:                    # <html>
     result &= render_tag this
