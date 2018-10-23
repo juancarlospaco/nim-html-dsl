@@ -515,7 +515,7 @@ func attributter(tagy: HtmlNode): string =
 func render(this: HtmlNode): string {.discardable.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
   let atributos = attributter(this)
-  case this.kind:
+  case this.kind
   of nkhtml:
     result =
       when defined(release): "<!DOCTYPE html>" & "<html class='has-navbar-fixed-top'" & atributos & ">"
@@ -585,7 +585,7 @@ func render(this: HtmlNode): string {.discardable.} =
 
 func close(this: HtmlNode): string {.discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
-  case this.kind:
+  case this.kind
   of nkhtml:
     result =
       when defined(release): "</html>"
