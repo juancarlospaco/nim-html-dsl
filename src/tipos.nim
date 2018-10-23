@@ -178,6 +178,10 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
   cols: string
   rows : string
   wrap: string
+  integrity: string
+  media: string
+  referrerpolicy: string
+  sizes: string
   children: seq[HtmlNode]
   case kind: HtmlNodeKind  # Some tags have unique attributes.
   of nkHtml:
@@ -507,12 +511,21 @@ func attributter(tagy: HtmlNode): string =
     atributes.add "http-equiv=\"" & tagy.httpequiv & "\" "
   if tagy.content.len > 0:
     atributes.add "content=\"" & tagy.content & "\" "
+  if tagy.integrity.len > 0:
+    atributes.add "integrity=\"" & tagy.integrity & "\" "
+  if tagy.media.len > 0:
+    atributes.add "media=\"" & tagy.media & "\" "
+  if tagy.referrerpolicy.len > 0:
+    atributes.add "referrerpolicy=\"" & tagy.referrerpolicy & "\" "
+  if tagy.sizes.len > 0:
+    atributes.add "sizes=\"" & tagy.sizes & "\" "
+
   when not defined(release):  # No one uses contenteditable on Prod.
     if tagy.contenteditable:
       atributes.add """contenteditable="true" """
   result = atributes.join.strip(leading=false)
 
-func render_tag(this: HtmlNode): string {.discardable.} =
+func open_tag(this: HtmlNode): string {.discardable.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
   # TODO: https://dev.to/bitario/psa-add-dirauto-to-your-inputs-and-textareas-blc
   var atributos: string
@@ -535,6 +548,10 @@ func render_tag(this: HtmlNode): string {.discardable.} =
     result =
       when defined(release): "<meta" & atributos & ">"
       else: "<meta" & atributos & ">\n"
+  of nkLink:
+    result =
+      when defined(release): "<link" & atributos & ">"
+      else: "<link" & atributos & ">\n"
   of nkBody:
     result =
       when defined(release): "<body class='has-navbar-fixed-top'>"
@@ -577,11 +594,11 @@ func render_tag(this: HtmlNode): string {.discardable.} =
       else: "<meter class='progress is-small bar-item' role='progressbar'" & atributos & ">\n"
   of nkComment:
     result =
-      when defined(release): "<!-- " & this.text.strip
-      else: "\n\n<!--  " & this.text
+      when defined(release): "<!-- " & this.text.strip & " -->"
+      else: "\n\n<!--  " & this.text & "  -->\n\n"
   else:
     var tagy = $this.kind
-    tagy = tagy.replace("nk", "").toLowerAscii
+    tagy = tagy[2 ..< len(tagy)].toLowerAscii # remove "nk" from string
     result =
       when defined(release): "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">"
       else: "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">\n"
@@ -589,17 +606,25 @@ func render_tag(this: HtmlNode): string {.discardable.} =
 func close_tag(this: HtmlNode): string {.discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
   case this.kind
-  of nkhtml:
+  of nkHtml:
     result =
       when defined(release): "</html>"
       else: "</html>\n<!-- Nim " & NimVersion & " -->\n"
-  of nkComment:
-    result =
-      when defined(release): " -->"
-      else: "  -->\n\n"
-  else:
+  of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
+      nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
+      nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
+      nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
+      nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI, nkImg,
+      nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
+      nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
+      nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
+      nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
+      nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
+      nkTrack, nkTt, nkU, nkUl, nkBody, nkHead:
     var tagy = $this.kind
-    tagy = tagy.replace("nk", "").toLowerAscii
+    tagy = tagy[2 ..< len(tagy)].toLowerAscii
     result =
       when defined(release): "</" & tagy & ">"
       else: "</" & tagy & ">\n"
+  else:
+    debugEcho toUpperAscii($this.kind)

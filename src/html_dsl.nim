@@ -50,7 +50,18 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
   result.class = class
   result.rel = rel
 
-func meta*(name, content, httpequiv: string): HtmlNode =
+
+
+
+
+
+func link*(href: string, hreflang="", crossorigin="", integrity="", media="", referrerpolicy="", sizes=""): HtmlNode =
+  ## Create a new ``<link>`` tag Node with attributes. No children.
+  HtmlNode(kind: nkLink, href: href, crossorigin: crossorigin, integrity: integrity,
+           media: media, referrerpolicy: referrerpolicy, sizes: sizes, hreflang: hreflang)
+
+func meta*(name, content: string, httpequiv=""): HtmlNode =
+  ## Create a new ``<meta>`` tag Node with name,content,httpequiv. No children.
   HtmlNode(kind: nkMeta, name: name, content: content, httpequiv: httpequiv)
 
 func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode =
@@ -89,7 +100,7 @@ macro html*(name: untyped, inner: untyped): typed =
   result = quote do: # inner is the whole content of the HTML DSL (head + body)
     func `name`(): HtmlNode {.inline.} = `rs` # Do name() = newHtml(head, body)
 
-template render_indent(thingy, indentation_level: untyped): untyped =
+template indent_if_needed(thingy, indentation_level: untyped): untyped =
   ## Render Pretty-Printed with indentation when build for Release,else Minified
   when defined(release): thingy           # Release, Minified for Performance.
   else: indent(thingy, indentation_level) # Development, use the Indentations.
@@ -99,33 +110,33 @@ func render*(this: HtmlNode): string =
   var indentation_level: byte   # indent level, 0 ~ 255.
   case this.kind
   of nkHtml:                    # <html>
-    result &= render_tag this
+    result &= open_tag this
     inc indentation_level
-    result &= render_indent(render(this.head), indentation_level)
-    result &= render_indent(render(this.body), indentation_level)
+    result &= indent_if_needed(render(this.head), indentation_level)
+    result &= indent_if_needed(render(this.body), indentation_level)
     dec indentation_level
     result &= close_tag this
   of nkHead:                    # <head>
-    result &= render_tag this
+    result &= open_tag this
     inc indentation_level
     if this.meta.len > 0:
       for meta_tag in this.meta:  # <meta ... >
-        result &= render_indent(render_tag(meta_tag), indentation_level)
+        result &= indent_if_needed(render(meta_tag), indentation_level)
     if this.link.len > 0:
       for link_tag in this.link:  # <link ... >
-        result &= render_indent(render_tag(link_tag), indentation_level)
-    result &= render_indent(render_tag(this.title), indentation_level)
+        result &= indent_if_needed(render(link_tag), indentation_level)
+    result &= indent_if_needed(open_tag(this.title), indentation_level)
     dec indentation_level
     result &= close_tag this
   of nkBody:                    # <body>
-    result &= render_tag this
+    result &= open_tag this
     inc indentation_level
     if this.children.len > 0:
       for tag in this.children:
         if tag.kind in can_have_children:
-          result &= render_indent(render(tag), indentation_level)
+          result &= indent_if_needed(render(tag), indentation_level)
         else:
-          result &= render_indent(render_tag(tag), indentation_level)
+          result &= indent_if_needed(open_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
   of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
@@ -139,25 +150,26 @@ func render*(this: HtmlNode): string =
      nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
      nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
      nkTrack, nkTt, nkU, nkUl:  # All other tags
-    result &= render_tag this
+    result &= open_tag this
     inc indentation_level
     if this.children.len > 0:
       for tag in this.children:
         if tag.kind in can_have_children:
-          result &= render_indent(render(tag), indentation_level)
+          result &= indent_if_needed(render(tag), indentation_level)
         else:
-          result &= render_indent(render_tag(tag), indentation_level)
+          result &= indent_if_needed(open_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
   else:
-    assert false
+    debugEcho toUpperAscii($this.kind)
 
 
 when isMainModule:
   html page:
     head:
       title "Title"
-      meta "foo", "bar", "baz"
+      meta "foo", "bar"
+      link "href", hreflang="hreflang", crossorigin="crossorigin", integrity="integrity", media="media", referrerpolicy="referrerpolicy", sizes="sizes"
     body:
       p("Hello")
       p("World")
