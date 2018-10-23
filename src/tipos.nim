@@ -182,7 +182,6 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
   media: string
   referrerpolicy: string
   sizes: string
-  children: seq[HtmlNode]
   case kind: HtmlNodeKind  # Some tags have unique attributes.
   of nkHtml:
     head: HtmlNode
@@ -191,7 +190,8 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
     title: HtmlNode
     meta: seq[HtmlNode]
     link: seq[HtmlNode]
-  else: discard
+  else:
+    children: seq[HtmlNode]
 
 # func toJson*(this: HtmlNode): string =
 #   result = "[\n    {\n"
@@ -526,7 +526,6 @@ func attributter(tagy: HtmlNode): string =
 
 func open_tag(this: HtmlNode): string {.discardable.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
-  # TODO: https://dev.to/bitario/psa-add-dirauto-to-your-inputs-and-textareas-blc
   var atributos: string
   if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]:
     atributos = attributter(this)
@@ -560,13 +559,13 @@ func open_tag(this: HtmlNode): string {.discardable.} =
       when defined(release): "<article class='message'" & atributos & ">"
       else: "<article class='message'" & atributos & ">\n"
   of nkButton:
-    result =
-      when defined(release): "<button class='button is-light is-rounded btn tooltip'" & atributos & ">"
-      else: "<button class='button is-light is-rounded btn tooltip'" & atributos & ">\n"
+    result = "<button class='button is-light is-rounded btn tooltip'" & atributos & ">" & this.text
   of nkDetails:
     result =
       when defined(release): "<details class='message is-dark'" & atributos & ">"
       else: "<details class='message is-dark'" & atributos & ">\n"
+  of nkSummary:
+    result = "<summary class='message-header is-dark'" & atributos & ">" & this.text
   of nkDialog:
     result =
       when defined(release): "<dialog class='notification is-rounded modal'" & atributos & ">"
@@ -591,6 +590,53 @@ func open_tag(this: HtmlNode): string {.discardable.} =
     result =
       when defined(release): "<meter class='progress is-small bar-item' role='progressbar'" & atributos & ">"
       else: "<meter class='progress is-small bar-item' role='progressbar'" & atributos & ">\n"
+  of nkProgress:
+    result =
+      when defined(release): "<progress class='progress is-small bar-item' role='progressbar'" & atributos & ">"
+      else: "<progress class='progress is-small bar-item' role='progressbar'" & atributos & ">\n"
+  of nkSection:
+    result =
+      when defined(release): "<section class='section'" & atributos & ">"
+      else: "<section class='section'" & atributos & ">\n"
+  of nkSelect:
+    result =
+      when defined(release): "<select class='select is-primary is-rounded is-small form-select'" & atributos & ">"
+      else: "<select class='select is-primary is-rounded is-small form-select'" & atributos & ">\n"
+  of nkTable:
+    result =
+      when defined(release): "<table class='table is-bordered is-striped is-hoverable table-striped table-hover'" & atributos & ">"
+      else: "<table class='table is-bordered is-striped is-hoverable table-striped table-hover'" & atributos & ">\n"
+  of nkFigure:
+    result =
+      when defined(release): "<figure class='figure figure-caption text-center'" & atributos & ">" & this.text
+      else: "<figure class='figure figure-caption text-center'" & atributos & ">\n" & this.text
+  of nkPre:
+    result =
+      when defined(release): "<pre class='code'" & atributos & ">" & this.text
+      else: "<pre class='code'" & atributos & ">\n" & this.text
+  of nkVideo:
+    result =
+      when defined(release): "<video class='video-responsive'" & atributos & ">"
+      else: "<video class='video-responsive'" & atributos & ">\n"
+  of nkCenter:
+    result =
+      when defined(release): "<center class='is-centered'" & atributos & ">" & this.text
+      else: "<center class='is-centered'" & atributos & ">\n" & this.text
+  of nkInput:
+    result =
+      when defined(release): "<input class='input is-primary form-input' dir=\"auto\" " & atributos & ">"
+      else: "<input class='input is-primary form-input' dir=\"auto\" " & atributos & ">\n"
+  of nkTextarea:
+    result =
+      when defined(release): "<textarea class='textarea is-primary form-input' dir=\"auto\" " & atributos & ">"
+      else: "<textarea class='textarea is-primary form-input' dir=\"auto\" " & atributos & ">\n"
+  of nkNav:
+    result =
+      when defined(release): "<nav class='navbar is-fixed-top is-light' role=\"navigation\"" & atributos & ">"
+      else: "<nav class='navbar is-fixed-top is-light' role=\"navigation\"" & atributos & ">\n"
+
+
+
   of nkComment:
     result =
       when defined(release): "<!-- " & this.text.strip & " -->"
