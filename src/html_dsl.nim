@@ -128,32 +128,32 @@ func transpile*(this: HtmlNode): string =
   var indentation_level: byte # indent level, 0 ~ 255.
   case this.kind
   of nkhtml:
-    result &= render this
+    result &= render_tag this
     inc indentation_level
     result &= render_indent(transpile(this.head), indentation_level)
     result &= render_indent(transpile(this.body), indentation_level)
     dec indentation_level
-    result &= close this
+    result &= close_tag this
   of nkhead:
-    result &= render this
+    result &= render_tag this
     inc indentation_level
     for meta_tag in this.meta:   # <meta ... >
-      result &= render_indent(render(meta_tag), indentation_level)
+      result &= render_indent(render_tag(meta_tag), indentation_level)
     for link_tag in this.link:   # <link ... >
-      result &= render_indent(render(link_tag), indentation_level)
-    result &= render_indent(render(this.title), indentation_level)
+      result &= render_indent(render_tag(link_tag), indentation_level)
+    result &= render_indent(render_tag(this.title), indentation_level)
     dec indentation_level
-    result &= close this
+    result &= close_tag this
   of nkBody:
-    result &= render this
+    result &= render_tag this
     inc indentation_level
     for tag in this.sons:
       if tag.kind in can_have_children:
         result &= render_indent(transpile(tag), indentation_level)
       else:
-        result &= render_indent(render(tag), indentation_level)
+        result &= render_indent(render_tag(tag), indentation_level)
     dec indentation_level
-    result &= close this
+    result &= close_tag this
   of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi,
      nkBdo, nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption,
      nkCenter, nkCol, nkColgroup, nkData, nkDatalist, nkDd, nkDel,
@@ -165,15 +165,15 @@ func transpile*(this: HtmlNode): string =
      nkRuby, nkS, nkSamp, nkSection, nkSelect, nkSmall, nkSource, nkSpan,
      nkStrong, nkSub, nkSummary, nkSup, nkTable, nkTbody, nkTd, nkTemplate,
      nkTfoot, nkTh, nkThead, nkTr, nkTrack, nkTt, nkU, nkUl:
-    result &= render this
+    result &= render_tag this
     inc indentation_level
     for tag in this.sons:
       if tag.kind in can_have_children:
         result &= render_indent(transpile(tag), indentation_level)
       else:
-        result &= render_indent(render(tag), indentation_level)
+        result &= render_indent(render_tag(tag), indentation_level)
     dec indentation_level
-    result &= close this
+    result &= close_tag this
   else:
     assert false
 
