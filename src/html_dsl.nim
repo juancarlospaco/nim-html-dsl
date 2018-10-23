@@ -23,19 +23,10 @@ const can_have_children = [
 
 
 
-func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode =
-  result = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link)
-
-macro head*(inner: untyped): HtmlNode =
-  assert inner.len >= 1, "Head Error: Wrong number of inner elements:" & $inner.len
-  result = newCall("newHead")
-  if inner.len == 1:
-    result.add(inner)
-  inner.copychildrento(result)
 
 
-func meta*(name, val: string): HtmlNode =
-  HtmlNode(kind: nkMeta, name: name, content: val)
+
+
 
 
 
@@ -53,11 +44,6 @@ macro dv*(inner: untyped): HtmlNode =
     result.add(inner)
   inner.copychildrento(result)
 
-
-
-
-
-
 func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
   result = HtmlNode(kind: nkA, href: href, text: val)
   result.id = id
@@ -66,10 +52,23 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
 
 
 
+func meta*(name, content, httpequiv: string): HtmlNode =
+  HtmlNode(kind: nkMeta, name: name, content: content, httpequiv: httpequiv)
+
+func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode =
+  ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
+  HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link)
+
+macro head*(inner: untyped): HtmlNode =
+  ## Macro to call ``newHead()`` with the childrens.
+  assert inner.len >= 1, "Head Error: Wrong number of inner tags:" & $inner.len
+  result = newCall("newHead")
+  if inner.len == 1: result.add(inner)
+  inner.copychildrento(result)
 
 func title*(titulo: string): HtmlNode =
   ## Create a new ``<title>`` tag Node with text string, title is Capitalized.
-  HtmlNode(kind: nkTitle, text: titulo.strip.capitalizeAscii)
+  HtmlNode(kind: nkTitle, text: titulo.strip.capitalizeAscii) # Only title arg
 
 func newBody*(children: varargs[HtmlNode]): HtmlNode =
   ## Create a new ``<body>`` tag Node, containing all children tags.
@@ -101,31 +100,34 @@ func render*(this: HtmlNode): string =
   ## Render HtmlNode with indentation return string.
   var indentation_level: byte   # indent level, 0 ~ 255.
   case this.kind
-  of nkhtml:                    # <html>
+  of nkHtml:                    # <html>
     result &= render_tag this
     inc indentation_level
     result &= render_indent(render(this.head), indentation_level)
     result &= render_indent(render(this.body), indentation_level)
     dec indentation_level
     result &= close_tag this
-  of nkhead:                    # <head>
+  of nkHead:                    # <head>
     result &= render_tag this
     inc indentation_level
-    for meta_tag in this.meta:  # <meta ... >
-      result &= render_indent(render_tag(meta_tag), indentation_level)
-    for link_tag in this.link:  # <link ... >
-      result &= render_indent(render_tag(link_tag), indentation_level)
+    if this.meta.len > 0:
+      for meta_tag in this.meta:  # <meta ... >
+        result &= render_indent(render_tag(meta_tag), indentation_level)
+    if this.link.len > 0:
+      for link_tag in this.link:  # <link ... >
+        result &= render_indent(render_tag(link_tag), indentation_level)
     result &= render_indent(render_tag(this.title), indentation_level)
     dec indentation_level
     result &= close_tag this
   of nkBody:                    # <body>
     result &= render_tag this
     inc indentation_level
-    for tag in this.children:
-      if tag.kind in can_have_children:
-        result &= render_indent(render(tag), indentation_level)
-      else:
-        result &= render_indent(render_tag(tag), indentation_level)
+    if this.children.len > 0:
+      for tag in this.children:
+        if tag.kind in can_have_children:
+          result &= render_indent(render(tag), indentation_level)
+        else:
+          result &= render_indent(render_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
   of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
@@ -141,11 +143,12 @@ func render*(this: HtmlNode): string =
      nkTrack, nkTt, nkU, nkUl:  # All other tags
     result &= render_tag this
     inc indentation_level
-    for tag in this.children:
-      if tag.kind in can_have_children:
-        result &= render_indent(render(tag), indentation_level)
-      else:
-        result &= render_indent(render_tag(tag), indentation_level)
+    if this.children.len > 0:
+      for tag in this.children:
+        if tag.kind in can_have_children:
+          result &= render_indent(render(tag), indentation_level)
+        else:
+          result &= render_indent(render_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
   else:
@@ -156,9 +159,11 @@ when isMainModule:
   html page:
     head:
       title("Title")
+      meta("foo", "bar", "baz")
     body:
       p("Hello")
       p("World")
       dv:
         p "Example"
+
   echo render(page())

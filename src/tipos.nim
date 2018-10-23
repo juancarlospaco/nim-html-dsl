@@ -37,6 +37,7 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
   tabindex: string
   translate: string
   hidden: string
+  httpequiv: string
   lang: string
   role: string
   spellcheck: string
@@ -192,14 +193,14 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
 # func toJson*(this: HtmlNode): string =
 #   result = "[\n    {\n"
 #   result &= "    " & $this.kind  # FIXME: Make it work or remove it (?).
-#   if this.children.len.bool:
+#   if this.children.len > 0:
 #     result &= ":\n        {\n"
 #     for tag in this.children:
 #       result &= "\n" & $tag
 
 func `$`*(this: HtmlNode): string =
   result = $this.kind & ": "  # Change to .repr()
-  if this.children.len.bool:
+  if this.children.len > 0:
     for tag in this.children:
       result &= "\n" & $tag
 
@@ -211,300 +212,302 @@ func attributter(tagy: HtmlNode): string =
     atributes.add "width=\"" & $tagy.width & "\" "
   if unlikely(tagy.height != 0):
     atributes.add "width='" & $tagy.height & "\" "
-  if tagy.id.len.bool:
+  if tagy.id.len > 0:
     atributes.add "id=\"" & tagy.id & "\" "
-  if tagy.class.len.bool:
+  if tagy.class.len > 0:
     atributes.add "class=\"" & tagy.class & "\" "
-  if tagy.name.len.bool:
+  if tagy.name.len > 0:
     atributes.add "name=\"" & tagy.name & "\" "
-  if unlikely(tagy.accesskey.len.bool):
+  if unlikely(tagy.accesskey.len > 0):
     atributes.add "accesskey=\"" & tagy.accesskey & "\" "
-  if unlikely(tagy.dir.len.bool):
+  if unlikely(tagy.dir.len > 0):
     atributes.add "dir=\"" & tagy.dir & "\" "
-  if tagy.src.len.bool:
+  if tagy.src.len > 0:
     atributes.add "src=\"" & tagy.src & "\" "
-  if unlikely(tagy.tabindex.len.bool):
+  if unlikely(tagy.tabindex.len > 0):
     atributes.add "tabindex=\"" & tagy.tabindex & "\" "
-  if unlikely(tagy.translate.len.bool):
+  if unlikely(tagy.translate.len > 0):
     atributes.add "translate=\"" & tagy.translate & "\" "
-  if tagy.hidden.len.bool:
+  if tagy.hidden.len > 0:
     atributes.add "hidden "
-  if unlikely(tagy.lang.len.bool):
+  if unlikely(tagy.lang.len > 0):
     atributes.add "lang=\"" & tagy.lang & "\" "
-  if tagy.role.len.bool:
+  if tagy.role.len > 0:
     atributes.add "role=\"" & tagy.role & "\" "
-  if unlikely(tagy.spellcheck.len.bool):
+  if unlikely(tagy.spellcheck.len > 0):
     atributes.add "spellcheck "
-  if tagy.onabort.len.bool:
+  if tagy.onabort.len > 0:
     atributes.add "onabort=\"" & tagy.onabort & "\" "
-  if tagy.onblur.len.bool:
+  if tagy.onblur.len > 0:
     atributes.add "onblur=\"" & tagy.onblur & "\" "
-  if tagy.oncancel.len.bool:
+  if tagy.oncancel.len > 0:
     atributes.add "oncancel=\"" & tagy.oncancel & "\" "
-  if unlikely(tagy.oncanplay.len.bool):
+  if unlikely(tagy.oncanplay.len > 0):
     atributes.add "oncanplay=\"" & tagy.oncanplay & "\" "
-  if unlikely(tagy.oncanplaythrough.len.bool):
+  if unlikely(tagy.oncanplaythrough.len > 0):
     atributes.add "oncanplaythrough=\"" & tagy.oncanplaythrough & "\" "
-  if tagy.onchange.len.bool:
+  if tagy.onchange.len > 0:
     atributes.add "onchange=\"" & tagy.onchange & "\" "
-  if tagy.onclick.len.bool:
+  if tagy.onclick.len > 0:
     atributes.add "onclick=\"" & tagy.onclick & "\" "
-  if unlikely(tagy.oncuechange.len.bool):
+  if unlikely(tagy.oncuechange.len > 0):
     atributes.add "oncuechange=\"" & tagy.oncuechange & "\" "
-  if tagy.ondblclick.len.bool:
+  if tagy.ondblclick.len > 0:
     atributes.add "ondblclick=\"" & tagy.ondblclick & "\" "
-  if tagy.ondurationchange.len.bool:
+  if tagy.ondurationchange.len > 0:
     atributes.add "ondurationchange=\"" & tagy.ondurationchange & "\" "
-  if unlikely(tagy.onemptied.len.bool):
+  if unlikely(tagy.onemptied.len > 0):
     atributes.add "onemptied=\"" & tagy.onemptied & "\" "
-  if tagy.onended.len.bool:
+  if tagy.onended.len > 0:
     atributes.add "onended=\"" & tagy.onended & "\" "
-  if tagy.onerror.len.bool:
+  if tagy.onerror.len > 0:
     atributes.add "onerror=\"" & tagy.onerror & "\" "
-  if tagy.onfocus.len.bool:
+  if tagy.onfocus.len > 0:
     atributes.add "onfocus=\"" & tagy.onfocus & "\" "
-  if tagy.oninput.len.bool:
+  if tagy.oninput.len > 0:
     atributes.add "oninput=\"" & tagy.oninput & "\" "
-  if tagy.oninvalid.len.bool:
+  if tagy.oninvalid.len > 0:
     atributes.add "oninvalid=\"" & tagy.oninvalid & "\" "
-  if tagy.onkeydown.len.bool:
+  if tagy.onkeydown.len > 0:
     atributes.add "onkeydown=\"" & tagy.onkeydown & "\" "
-  if tagy.onkeypress.len.bool:
+  if tagy.onkeypress.len > 0:
     atributes.add "onkeypress=\"" & tagy.onkeypress & "\" "
-  if tagy.onkeyup.len.bool:
+  if tagy.onkeyup.len > 0:
     atributes.add "onkeyup=\"" & tagy.onkeyup & "\" "
-  if tagy.onload.len.bool:
+  if tagy.onload.len > 0:
     atributes.add "onload=\"" & tagy.onload & "\" "
-  if tagy.onloadeddata.len.bool:
+  if tagy.onloadeddata.len > 0:
     atributes.add "onloadeddata=\"" & tagy.onloadeddata & "\" "
-  if unlikely(tagy.onloadedmetadata.len.bool):
+  if unlikely(tagy.onloadedmetadata.len > 0):
     atributes.add "onloadedmetadata=\"" & tagy.onloadedmetadata & "\" "
-  if tagy.onloadstart.len.bool:
+  if tagy.onloadstart.len > 0:
     atributes.add "onloadstart=\"" & tagy.onloadstart & "\" "
-  if tagy.onmousedown.len.bool:
+  if tagy.onmousedown.len > 0:
     atributes.add "onmousedown=\"" & tagy.onmousedown & "\" "
-  if tagy.onmouseenter.len.bool:
+  if tagy.onmouseenter.len > 0:
     atributes.add "onmouseenter=\"" & tagy.onmouseenter & "\" "
-  if tagy.onmouseleave.len.bool:
+  if tagy.onmouseleave.len > 0:
     atributes.add "onmouseleave=\"" & tagy.onmouseleave & "\" "
-  if tagy.onmousemove.len.bool:
+  if tagy.onmousemove.len > 0:
     atributes.add "onmousemove=\"" & tagy.onmousemove & "\" "
-  if tagy.onmouseout.len.bool:
+  if tagy.onmouseout.len > 0:
     atributes.add "onmouseout=\"" & tagy.onmouseout & "\" "
-  if tagy.onmouseover.len.bool:
+  if tagy.onmouseover.len > 0:
     atributes.add "onmouseover=\"" & tagy.onmouseover & "\" "
-  if tagy.onmouseup.len.bool:
+  if tagy.onmouseup.len > 0:
     atributes.add "onmouseup=\"" & tagy.onmouseup & "\" "
-  if tagy.onmousewheel.len.bool:
+  if tagy.onmousewheel.len > 0:
     atributes.add "onmousewheel=\"" & tagy.onmousewheel & "\" "
-  if tagy.onpause.len.bool:
+  if tagy.onpause.len > 0:
     atributes.add "onpause=\"" & tagy.onpause & "\" "
-  if unlikely(tagy.onplay.len.bool):
+  if unlikely(tagy.onplay.len > 0):
     atributes.add "onplay=\"" & tagy.onplay & "\" "
-  if unlikely(tagy.onplaying.len.bool):
+  if unlikely(tagy.onplaying.len > 0):
     atributes.add "onplaying=\"" & tagy.onplaying & "\" "
-  if tagy.onprogress.len.bool:
+  if tagy.onprogress.len > 0:
     atributes.add "onprogress=\"" & tagy.onprogress & "\" "
-  if unlikely(tagy.onratechange.len.bool):
+  if unlikely(tagy.onratechange.len > 0):
     atributes.add "onratechange=\"" & tagy.onratechange & "\" "
-  if unlikely(tagy.onreset.len.bool):
+  if unlikely(tagy.onreset.len > 0):
     atributes.add "onreset=\"" & tagy.onreset & "\" "
-  if tagy.onresize.len.bool:
+  if tagy.onresize.len > 0:
     atributes.add "onresize=\"" & tagy.onresize & "\" "
-  if tagy.onscroll.len.bool:
+  if tagy.onscroll.len > 0:
     atributes.add "onscroll=\"" & tagy.onscroll & "\" "
-  if unlikely(tagy.onseeked.len.bool):
+  if unlikely(tagy.onseeked.len > 0):
     atributes.add "onseeked=\"" & tagy.onseeked & "\" "
-  if unlikely(tagy.onseeking.len.bool):
+  if unlikely(tagy.onseeking.len > 0):
     atributes.add "onseeking=\"" & tagy.onseeking & "\" "
-  if tagy.onselect.len.bool:
+  if tagy.onselect.len > 0:
     atributes.add "onselect=\"" & tagy.onselect & "\" "
-  if tagy.onshow.len.bool:
+  if tagy.onshow.len > 0:
     atributes.add "onshow=\"" & tagy.onshow & "\" "
-  if unlikely(tagy.onstalled.len.bool):
+  if unlikely(tagy.onstalled.len > 0):
     atributes.add "onstalled=\"" & tagy.onstalled & "\" "
-  if tagy.onsubmit.len.bool:
+  if tagy.onsubmit.len > 0:
     atributes.add "onsubmit=\"" & tagy.onsubmit & "\" "
-  if tagy.onsuspend.len.bool:
+  if tagy.onsuspend.len > 0:
     atributes.add "onsuspend=\"" & tagy.onsuspend & "\" "
-  if unlikely(tagy.ontimeupdate.len.bool):
+  if unlikely(tagy.ontimeupdate.len > 0):
     atributes.add "ontimeupdate=\"" & tagy.ontimeupdate & "\" "
-  if tagy.ontoggle.len.bool:
+  if tagy.ontoggle.len > 0:
     atributes.add "ontoggle=\"" & tagy.ontoggle & "\" "
-  if unlikely(tagy.onvolumechange.len.bool):
+  if unlikely(tagy.onvolumechange.len > 0):
     atributes.add "onvolumechange=\"" & tagy.onvolumechange & "\" "
-  if tagy.onwaiting.len.bool:
+  if tagy.onwaiting.len > 0:
     atributes.add "onwaiting=\"" & tagy.onwaiting & "\" "
-  if unlikely(tagy.onafterprint.len.bool):
+  if unlikely(tagy.onafterprint.len > 0):
     atributes.add "onafterprint=\"" & tagy.onafterprint & "\" "
-  if unlikely(tagy.onbeforeprint.len.bool):
+  if unlikely(tagy.onbeforeprint.len > 0):
     atributes.add "onbeforeprint=\"" & tagy.onbeforeprint & "\" "
-  if tagy.onbeforeunload.len.bool:
+  if tagy.onbeforeunload.len > 0:
     atributes.add "onbeforeunload=\"" & tagy.onbeforeunload & "\" "
-  if unlikely(tagy.onhashchange.len.bool):
+  if unlikely(tagy.onhashchange.len > 0):
     atributes.add "onhashchange=\"" & tagy.onhashchange & "\" "
-  if tagy.onmessage.len.bool:
+  if tagy.onmessage.len > 0:
     atributes.add "onmessage=\"" & tagy.onmessage & "\" "
-  if tagy.onoffline.len.bool:
+  if tagy.onoffline.len > 0:
     atributes.add "onoffline=\"" & tagy.onoffline & "\" "
-  if tagy.ononline.len.bool:
+  if tagy.ononline.len > 0:
     atributes.add "ononline=\"" & tagy.ononline & "\" "
-  if unlikely(tagy.onpagehide.len.bool):
+  if unlikely(tagy.onpagehide.len > 0):
     atributes.add "onpagehide=\"" & tagy.onpagehide & "\" "
-  if unlikely(tagy.onpageshow.len.bool):
+  if unlikely(tagy.onpageshow.len > 0):
     atributes.add "onpageshow=\"" & tagy.onpageshow & "\" "
-  if unlikely(tagy.onpopstate.len.bool):
+  if unlikely(tagy.onpopstate.len > 0):
     atributes.add "onpopstate=\"" & tagy.onpopstate & "\" "
-  if unlikely(tagy.onstorage.len.bool):
+  if unlikely(tagy.onstorage.len > 0):
     atributes.add "onstorage=\"" & tagy.onstorage & "\" "
-  if tagy.onunload.len.bool:
+  if tagy.onunload.len > 0:
     atributes.add "onunload=\"" & tagy.onunload & "\" "
-  if unlikely(tagy.onbounce.len.bool):
+  if unlikely(tagy.onbounce.len > 0):
     atributes.add "onbounce=\"" & tagy.onbounce & "\" "
-  if tagy.onfinish.len.bool:
+  if tagy.onfinish.len > 0:
     atributes.add "onfinish=\"" & tagy.onfinish & "\" "
-  if tagy.onstart.len.bool:
+  if tagy.onstart.len > 0:
     atributes.add "onstart=\"" & tagy.onstart & "\" "
-  if unlikely(tagy.disabled.len.bool):
+  if unlikely(tagy.disabled.len > 0):
     atributes.add "disabled "
-  if tagy.crossorigin.len.bool:
+  if tagy.crossorigin.len > 0:
     atributes.add "crossorigin=\"" & tagy.crossorigin & "\" "
-  if unlikely(tagy.hreflang.len.bool):
+  if unlikely(tagy.hreflang.len > 0):
     atributes.add "hreflang=\"" & tagy.hreflang & "\" "
-  if tagy.form.len.bool:
+  if tagy.form.len > 0:
     atributes.add "form=\"" & tagy.form & "\" "
-  if tagy.maxlength.len.bool:
+  if tagy.maxlength.len > 0:
     atributes.add "maxlength=\"" & tagy.maxlength & "\" "
-  if tagy.minlength.len.bool:
+  if tagy.minlength.len > 0:
     atributes.add "minlength=\"" & tagy.minlength & "\" "
-  if tagy.placeholder.len.bool:
+  if tagy.placeholder.len > 0:
     atributes.add "placeholder=\"" & tagy.placeholder & "\" "
-  if tagy.readonly.len.bool:
+  if tagy.readonly.len > 0:
     atributes.add "readonly "
-  if tagy.required.len.bool:
+  if tagy.required.len > 0:
     atributes.add "required "
-  if unlikely(tagy.coords.len.bool):
+  if unlikely(tagy.coords.len > 0):
     atributes.add "coords=\"" & tagy.coords & "\" "
-  if unlikely(tagy.download.len.bool):
+  if unlikely(tagy.download.len > 0):
     atributes.add "download=\"" & tagy.download & "\" "
-  if tagy.href.len.bool:
+  if tagy.href.len > 0:
     atributes.add "href=\"" & tagy.href & "\" "
-  if tagy.rel.len.bool:
+  if tagy.rel.len > 0:
     atributes.add "rel=\"" & tagy.rel & "\" "
-  if unlikely(tagy.shape.len.bool):
+  if unlikely(tagy.shape.len > 0):
     atributes.add "shape=\"" & tagy.shape & "\" "
-  if tagy.target.len.bool:
+  if tagy.target.len > 0:
     atributes.add "target=\"" & tagy.target & "\" "
-  if tagy.preload.len.bool:
+  if tagy.preload.len > 0:
     atributes.add "preload=\"" & tagy.preload & "\" "
-  if tagy.autoplay.len.bool:
+  if tagy.autoplay.len > 0:
     atributes.add "autoplay "
-  if unlikely(tagy.mediagroup.len.bool):
+  if unlikely(tagy.mediagroup.len > 0):
     atributes.add "mediagroup=\"" & tagy.mediagroup & "\" "
-  if unlikely(tagy.loop.len.bool):
+  if unlikely(tagy.loop.len > 0):
     atributes.add "loop=\"" & tagy.loop & "\" "
-  if unlikely(tagy.muted.len.bool):
+  if unlikely(tagy.muted.len > 0):
     atributes.add "muted=\"" & tagy.muted & "\" "
-  if unlikely(tagy.controls.len.bool):
+  if unlikely(tagy.controls.len > 0):
     atributes.add "controls "
-  if unlikely(tagy.poster.len.bool):
+  if unlikely(tagy.poster.len > 0):
     atributes.add "poster=\"" & tagy.poster & "\" "
-  if tagy.open.len.bool:
+  if tagy.open.len > 0:
     atributes.add "open "
-  if tagy.action.len.bool:
+  if tagy.action.len > 0:
     atributes.add "action=\"" & tagy.action & "\" "
-  if unlikely(tagy.enctype.len.bool):
+  if unlikely(tagy.enctype.len > 0):
     atributes.add "enctype=\"" & tagy.enctype & "\" "
-  if unlikely(tagy.novalidate.len.bool):
+  if unlikely(tagy.novalidate.len > 0):
     atributes.add "novalidate=\"" & tagy.novalidate & "\" "
-  if unlikely(tagy.srcdoc.len.bool):
+  if unlikely(tagy.srcdoc.len > 0):
     atributes.add "srcdoc=\"" & tagy.srcdoc & "\" "
-  if unlikely(tagy.sandbox.len.bool):
+  if unlikely(tagy.sandbox.len > 0):
     atributes.add "sandbox=\"" & tagy.sandbox & "\" "
-  if unlikely(tagy.usemap.len.bool):
+  if unlikely(tagy.usemap.len > 0):
     atributes.add "usemap=\"" & tagy.usemap & "\" "
-  if unlikely(tagy.ismap.len.bool):
+  if unlikely(tagy.ismap.len > 0):
     atributes.add "ismap=\"" & tagy.ismap & "\" "
-  if tagy.accept.len.bool:
+  if tagy.accept.len > 0:
     atributes.add "accept=\"" & tagy.accept & "\" "
-  if tagy.alt.len.bool:
+  if tagy.alt.len > 0:
     atributes.add "alt=\"" & tagy.alt & "\" "
-  if tagy.autocomplete.len.bool:
+  if tagy.autocomplete.len > 0:
     atributes.add "autocomplete "
-  if tagy.autofocus.len.bool:
+  if tagy.autofocus.len > 0:
     atributes.add "autofocus "
-  if tagy.checked.len.bool:
+  if tagy.checked.len > 0:
     atributes.add "checked "
-  if tagy.dirname.len.bool:
+  if tagy.dirname.len > 0:
     atributes.add "dirname=\"" & tagy.dirname & "\" "
-  if tagy.formaction.len.bool:
+  if tagy.formaction.len > 0:
     atributes.add "formaction=\"" & tagy.formaction & "\" "
-  if tagy.formenctype.len.bool:
+  if tagy.formenctype.len > 0:
     atributes.add "formenctype=\"" & tagy.formenctype & "\" "
-  if tagy.formmethod.len.bool:
+  if tagy.formmethod.len > 0:
     atributes.add "formmethod=\"" & tagy.formmethod & "\" "
-  if unlikely(tagy.formnovalidate.len.bool):
+  if unlikely(tagy.formnovalidate.len > 0):
     atributes.add "formnovalidate=\"" & tagy.formnovalidate & "\" "
-  if tagy.formtarget.len.bool:
+  if tagy.formtarget.len > 0:
     atributes.add "formtarget=\"" & tagy.formtarget & "\" "
-  if tagy.inputmode.len.bool:
+  if tagy.inputmode.len > 0:
     atributes.add "inputmode=\"" & tagy.inputmode & "\" "
-  if unlikely(tagy.list.len.bool):
+  if unlikely(tagy.list.len > 0):
     atributes.add "list=\"" & tagy.list & "\" "
-  if unlikely(tagy.max.len.bool):
+  if unlikely(tagy.max.len > 0):
     atributes.add "max=\"" & tagy.max & "\" "
-  if unlikely(tagy.min.len.bool):
+  if unlikely(tagy.min.len > 0):
     atributes.add "min=\"" & tagy.min & "\" "
-  if unlikely(tagy.multiple.len.bool):
+  if unlikely(tagy.multiple.len > 0):
     atributes.add "multiple=\"" & tagy.multiple & "\" "
-  if unlikely(tagy.pattern.len.bool):
+  if unlikely(tagy.pattern.len > 0):
     atributes.add "pattern=\"" & tagy.pattern & "\" "
-  if tagy.size.len.bool:
+  if tagy.size.len > 0:
     atributes.add "size=\"" & tagy.size & "\" "
-  if tagy.step.len.bool:
+  if tagy.step.len > 0:
     atributes.add "step=\"" & tagy.step & "\" "
-  if tagy.`type`.len.bool:
+  if tagy.`type`.len > 0:
     atributes.add "type=\"" & tagy.`type` & "\" "
-  if tagy.value.len.bool:
+  if tagy.value.len > 0:
     atributes.add "value=\"" & tagy.value & "\" "
-  if tagy.`for`.len.bool:
+  if tagy.`for`.len > 0:
     atributes.add "for=\"" & tagy.`for` & "\" "
-  if tagy.`async`.len.bool:
+  if tagy.`async`.len > 0:
     atributes.add "async "
-  if tagy.`defer`.len.bool:
+  if tagy.`defer`.len > 0:
     atributes.add "defer "
-  if unlikely(tagy.behavior.len.bool):
+  if unlikely(tagy.behavior.len > 0):
     atributes.add "behavior=\"" & tagy.behavior & "\" "
-  if unlikely(tagy.bgcolor.len.bool):
+  if unlikely(tagy.bgcolor.len > 0):
     atributes.add "bgcolor=\"" & tagy.bgcolor & "\" "
-  if unlikely(tagy.direction.len.bool):
+  if unlikely(tagy.direction.len > 0):
     atributes.add "direction=\"" & tagy.direction & "\" "
-  if unlikely(tagy.hspace.len.bool):
+  if unlikely(tagy.hspace.len > 0):
     atributes.add "hspace=\"" & tagy.hspace & "\" "
-  if unlikely(tagy.scrollamount.len.bool):
+  if unlikely(tagy.scrollamount.len > 0):
     atributes.add "scrollamount=\"" & tagy.scrollamount & "\" "
-  if unlikely(tagy.scrolldelay.len.bool):
+  if unlikely(tagy.scrolldelay.len > 0):
     atributes.add "scrolldelay=\"" & tagy.scrolldelay & "\" "
-  if unlikely(tagy.truespeed.len.bool):
+  if unlikely(tagy.truespeed.len > 0):
     atributes.add "truespeed=\"" & tagy.truespeed & "\" "
-  if unlikely(tagy.vspace.len.bool):
+  if unlikely(tagy.vspace.len > 0):
     atributes.add "vspace=\"" & tagy.vspace & "\" "
-  if unlikely(tagy.optimum.len.bool):
+  if unlikely(tagy.optimum.len > 0):
     atributes.add "optimum=\"" & tagy.optimum & "\" "
-  if tagy.selected.len.bool:
+  if tagy.selected.len > 0:
     atributes.add "selected "
-  if tagy.colspan.len.bool:
+  if tagy.colspan.len > 0:
     atributes.add "colspan=\"" & tagy.colspan & "\" "
-  if tagy.rowspan.len.bool:
+  if tagy.rowspan.len > 0:
     atributes.add "rowspan=\"" & tagy.rowspan & "\" "
-  if tagy.headers.len.bool:
+  if tagy.headers.len > 0:
     atributes.add "headers=\"" & tagy.headers & "\" "
-  if tagy.cols.len.bool:
+  if tagy.cols.len > 0:
     atributes.add "cols=\"" & tagy.cols & "\" "
-  if tagy.rows.len.bool:
+  if tagy.rows.len > 0:
     atributes.add "rows=\"" & tagy.rows & "\" "
-  if tagy.wrap.len.bool:
+  if tagy.wrap.len > 0:
     atributes.add "wrap=\"" & tagy.wrap & "\" "
+  if tagy.httpequiv.len > 0:
+    atributes.add "http-equiv=\"" & tagy.httpequiv & "\" "
   when not defined(release):  # No one uses contenteditable on Prod.
     if tagy.contenteditable:
       atributes.add """contenteditable="true" """
