@@ -87,7 +87,7 @@ func newHtml*(head, body: HtmlNode): HtmlNode =
 macro html*(name: untyped, inner: untyped): typed =
   ## Macro to create a new call to ``newHtml()``, passing Head and Body as arg.
   var rs = newCall("newHtml", inner[0], inner[1])  # Call newHtml(head, body)
-  result = quote do:
+  result = quote do: # inner is the whole content of the HTML DSL (head + body)
     func `name`(): HtmlNode {.inline.} = `rs` # Do name() = newHtml(head, body)
 
 template render_indent(thingy, indentation_level: untyped): untyped =
