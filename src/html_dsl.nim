@@ -83,43 +83,8 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
   result.class = class
   result.rel = rel
 
-macro a*(inner: varargs[untyped]): HtmlNode =
-  if inner[0].findchild(it.kind == nnkasgn) != nil:
-    var rest : tuple[class, id, href, text: NimNode]
-    for i in inner[0]:
-      if i.kind == nnkasgn :
-        if i[0].ident == !"class":
-          rest.class = i[1]
-        elif i[0].ident == !"id":
-          rest.id = i[1]
-        else: echo "other asgn?"
-      else:
-        if rest.href == nil:
-          rest.href = i
-        else:
-          rest.text = i
-    result = newCall("newa")
-    var sml = newstmtlist()
-    if rest.href != nil:
-      var eel = newnimnode(nnkexpreqexpr)
-      eel.add(newidentnode(!"href"),rest.href)
-      sml.add eel
-    if rest.text != nil:
-      var eel = newnimnode(nnkexpreqexpr)
-      eel.add(newidentnode(!"val"),rest.text)
-      sml.add eel
-    if rest.class != nil:
-      var eel = newnimnode(nnkexpreqexpr)
-      eel.add(newidentnode(!"class"),rest.class)
-      sml.add eel
-    if rest.id != nil:
-      var eel = newnimnode(nnkexpreqexpr)
-      eel.add(newidentnode(!"id"),rest.id)
-      sml.add eel
-    sml.copychildrento(result)
-  else:
-    result = newCall("newa")
-    inner.copychildrento(result)
+
+
 
 template render_indent(thingy, indentation_level: untyped): untyped =
   ## Render Pretty-Printed with indentation when build for Release,else Minified.
