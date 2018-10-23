@@ -44,8 +44,8 @@ func p*(x: varargs[string, `$`]): Htmlnode =
   result = Htmlnode(kind: nkP, text: (@x).join(" "))
 
 
-func newDiv*(sons: varargs[HtmlNode]): HtmlNode =
-  result = HtmlNode(kind: nkDiv, sons: @sons)
+func newDiv*(children: varargs[HtmlNode]): HtmlNode =
+  result = HtmlNode(kind: nkDiv, children: @children)
 
 macro dv*(inner: untyped): HtmlNode =
   assert inner.len >= 1, "Div Error: Wrong number of inner elements:" & $inner.len
@@ -70,15 +70,16 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
 
 
 
-func newBody*(sons: varargs[HtmlNode]): HtmlNode =
-  HtmlNode(kind: nkBody, sons: @sons)
+func newBody*(children: varargs[HtmlNode]): HtmlNode =
+  ## Create a new ``<Body>`` tag Node, containing all children tags.
+  HtmlNode(kind: nkBody, children: @children) # Body have childrens.
 
 macro body*(inner: untyped): HtmlNode =
+  ## Macro to call ``newBody()`` with the childrens, if any.
   assert inner.len >= 1, "Body Error: Wrong number of inner tags:" & $inner.len
-  result = newCall("newBody")
-  if inner.len == 1:
-    result.add(inner)
-  inner.copychildrento(result)
+  result = newCall("newBody") # Result is a call to newBody()
+  if inner.len == 1: result.add(inner) # if just 1 children just pass it as arg
+  inner.copychildrento(result) # if several children copy them all, AST level.
 
 func newHtml*(head, body: HtmlNode): HtmlNode =
   ## Create a new ``<html>`` tag Node, containing a ``<head>`` and ``<body>``.
@@ -119,7 +120,7 @@ func render*(this: HtmlNode): string =
   of nkBody:                    # <body>
     result &= render_tag this
     inc indentation_level
-    for tag in this.sons:
+    for tag in this.children:
       if tag.kind in can_have_children:
         result &= render_indent(render(tag), indentation_level)
       else:
@@ -139,7 +140,7 @@ func render*(this: HtmlNode): string =
      nkTrack, nkTt, nkU, nkUl:  # All other tags
     result &= render_tag this
     inc indentation_level
-    for tag in this.sons:
+    for tag in this.children:
       if tag.kind in can_have_children:
         result &= render_indent(render(tag), indentation_level)
       else:

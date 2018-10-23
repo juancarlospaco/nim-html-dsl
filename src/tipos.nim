@@ -178,7 +178,7 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
   cols: string
   rows : string
   wrap: string
-  sons: seq[HtmlNode]
+  children: seq[HtmlNode]
   case kind: HtmlNodeKind  # Some tags have unique attributes.
   of nkHtml:
     head: HtmlNode
@@ -192,15 +192,15 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
 # func toJson*(this: HtmlNode): string =
 #   result = "[\n    {\n"
 #   result &= "    " & $this.kind  # FIXME: Make it work or remove it (?).
-#   if this.sons.len.bool:
+#   if this.children.len.bool:
 #     result &= ":\n        {\n"
-#     for tag in this.sons:
+#     for tag in this.children:
 #       result &= "\n" & $tag
 
 func `$`*(this: HtmlNode): string =
   result = $this.kind & ": "  # Change to .repr()
-  if this.sons.len.bool:
-    for tag in this.sons:
+  if this.children.len.bool:
+    for tag in this.children:
       result &= "\n" & $tag
 
 func attributter(tagy: HtmlNode): string =
