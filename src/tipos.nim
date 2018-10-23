@@ -526,8 +526,8 @@ func render_tag(this: HtmlNode): string {.discardable.} =
       else: "<head>\n  " & basic_head_tags
   of nktitle:
     result =
-      when defined(release): "<title>" & this.val.strip.capitalizeAscii & "</title>"
-      else: "<title>" & this.val & "</title>\n"
+      when defined(release): "<title>" & this.text & "</title>"
+      else: "<title>" & this.text & "</title>\n"
   of nkmeta:
     result =
       when defined(release): "<meta" & atributos & ">"

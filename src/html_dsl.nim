@@ -37,8 +37,7 @@ macro head*(inner: untyped): HtmlNode =
 func meta*(name, val: string): HtmlNode =
   HtmlNode(kind: nkMeta, name: name, content: val)
 
-func title*(titulo: string): HtmlNode =
-  HtmlNode(kind: nkTitle, val: titulo.strip.capitalizeAscii)
+
 
 func p*(x: varargs[string, `$`]): Htmlnode =
   result = Htmlnode(kind: nkP, text: (@x).join(" "))
@@ -68,10 +67,12 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
 
 
 
-
+func title*(titulo: string): HtmlNode =
+  ## Create a new ``<title>`` tag Node with text string, title is Capitalized.
+  HtmlNode(kind: nkTitle, text: titulo.strip.capitalizeAscii)
 
 func newBody*(children: varargs[HtmlNode]): HtmlNode =
-  ## Create a new ``<Body>`` tag Node, containing all children tags.
+  ## Create a new ``<body>`` tag Node, containing all children tags.
   HtmlNode(kind: nkBody, children: @children) # Body have childrens.
 
 macro body*(inner: untyped): HtmlNode =
