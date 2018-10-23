@@ -1,4 +1,4 @@
-import strutils, strformat
+import strutils
 
 const
   basic_head_tags =
@@ -313,308 +313,308 @@ func `$`*(this: HtmlNode): string =
 
 func attributter(tagy: HtmlNode): string =
   ## Render to string all attributtes for all HTML tags. Uses Branch Prediction.
-  # TODO: Find the best way to Optimize this.
+  # TODO: Find the best way to Optimize this. Ugly code on purpose, for speed.
   var atributes = @[" "]
   if unlikely(tagy.width != 0):
-    atributes.add fmt"""width="{tagy.width}" """
+    atributes.add "width=\"" & $tagy.width & "\" "
   if unlikely(tagy.height != 0):
-    atributes.add fmt"""width="{tagy.height}" """
-  if tagy.id != "":
-    atributes.add fmt"""id="{tagy.id}" """
-  if tagy.class != "":
-    atributes.add fmt"""class="{tagy.class}" """
-  if tagy.name != "":
-    atributes.add fmt"""name="{tagy.name}" """
-  if unlikely(tagy.accesskey != ""):
-    atributes.add fmt"""accesskey="{tagy.accesskey}" """
-  if unlikely(tagy.dir != ""):
-    atributes.add fmt"""dir="{tagy.dir}" """
-  if tagy.src != "":
-    atributes.add fmt"""src="{tagy.src}" """
-  if unlikely(tagy.tabindex != ""):
-    atributes.add fmt"""tabindex="{tagy.tabindex}" """
-  if unlikely(tagy.translate != ""):
-    atributes.add fmt"""translate="{tagy.translate}" """
-  if tagy.hidden != "":
+    atributes.add "width='" & $tagy.height & "\" "
+  if tagy.id.len.bool:
+    atributes.add "id=\"" & tagy.id & "\" "
+  if tagy.class.len.bool:
+    atributes.add "class=\"" & tagy.class & "\" "
+  if tagy.name.len.bool:
+    atributes.add "name=\"" & tagy.name & "\" "
+  if unlikely(tagy.accesskey.len.bool):
+    atributes.add "accesskey=\"" & tagy.accesskey & "\" "
+  if unlikely(tagy.dir.len.bool):
+    atributes.add "dir=\"" & tagy.dir & "\" "
+  if tagy.src.len.bool:
+    atributes.add "src=\"" & tagy.src & "\" "
+  if unlikely(tagy.tabindex.len.bool):
+    atributes.add "tabindex=\"" & tagy.tabindex & "\" "
+  if unlikely(tagy.translate.len.bool):
+    atributes.add "translate=\"" & tagy.translate & "\" "
+  if tagy.hidden.len.bool:
     atributes.add "hidden "
-  if unlikely(tagy.lang != ""):
-    atributes.add fmt"""lang="{tagy.lang}" """
-  if tagy.role != "":
-    atributes.add fmt"""role="{tagy.role}" """
-  if unlikely(tagy.spellcheck != ""):
+  if unlikely(tagy.lang.len.bool):
+    atributes.add "lang=\"" & tagy.lang & "\" "
+  if tagy.role.len.bool:
+    atributes.add "role=\"" & tagy.role & "\" "
+  if unlikely(tagy.spellcheck.len.bool):
     atributes.add "spellcheck "
-  if tagy.onabort != "":
-    atributes.add fmt"""onabort="{tagy.onabort}" """
-  if tagy.onblur != "":
-    atributes.add fmt"""onblur="{tagy.onblur}" """
-  if tagy.oncancel != "":
-    atributes.add fmt"""oncancel="{tagy.oncancel}" """
-  if unlikely(tagy.oncanplay != ""):
-    atributes.add fmt"""oncanplay="{tagy.oncanplay}" """
-  if unlikely(tagy.oncanplaythrough != ""):
-    atributes.add fmt"""oncanplaythrough="{tagy.oncanplaythrough}" """
-  if tagy.onchange != "":
-    atributes.add fmt"""onchange="{tagy.onchange}" """
-  if tagy.onclick != "":
-    atributes.add fmt"""onclick="{tagy.onclick}" """
-  if unlikely(tagy.oncuechange != ""):
-    atributes.add fmt"""oncuechange="{tagy.oncuechange}" """
-  if tagy.ondblclick != "":
-    atributes.add fmt"""ondblclick="{tagy.ondblclick}" """
-  if tagy.ondurationchange != "":
-    atributes.add fmt"""ondurationchange="{tagy.ondurationchange}" """
-  if unlikely(tagy.onemptied != ""):
-    atributes.add fmt"""onemptied="{tagy.onemptied}" """
-  if tagy.onended != "":
-    atributes.add fmt"""onended="{tagy.onended}" """
-  if tagy.onerror != "":
-    atributes.add fmt"""onerror="{tagy.onerror}" """
-  if tagy.onfocus != "":
-    atributes.add fmt"""onfocus="{tagy.onfocus}" """
-  if tagy.oninput != "":
-    atributes.add fmt"""oninput="{tagy.oninput}" """
-  if tagy.oninvalid != "":
-    atributes.add fmt"""oninvalid="{tagy.oninvalid}" """
-  if tagy.onkeydown != "":
-    atributes.add fmt"""onkeydown="{tagy.onkeydown}" """
-  if tagy.onkeypress != "":
-    atributes.add fmt"""onkeypress="{tagy.onkeypress}" """
-  if tagy.onkeyup != "":
-    atributes.add fmt"""onkeyup="{tagy.onkeyup}" """
-  if tagy.onload != "":
-    atributes.add fmt"""onload="{tagy.onload}" """
-  if tagy.onloadeddata != "":
-    atributes.add fmt"""onloadeddata="{tagy.onloadeddata}" """
-  if unlikely(tagy.onloadedmetadata != ""):
-    atributes.add fmt"""onloadedmetadata="{tagy.onloadedmetadata}" """
-  if tagy.onloadstart != "":
-    atributes.add fmt"""onloadstart="{tagy.onloadstart}" """
-  if tagy.onmousedown != "":
-    atributes.add fmt"""onmousedown="{tagy.onmousedown}" """
-  if tagy.onmouseenter != "":
-    atributes.add fmt"""onmouseenter="{tagy.onmouseenter}" """
-  if tagy.onmouseleave != "":
-    atributes.add fmt"""onmouseleave="{tagy.onmouseleave}" """
-  if tagy.onmousemove != "":
-    atributes.add fmt"""onmousemove="{tagy.onmousemove}" """
-  if tagy.onmouseout != "":
-    atributes.add fmt"""onmouseout="{tagy.onmouseout}" """
-  if tagy.onmouseover != "":
-    atributes.add fmt"""onmouseover="{tagy.onmouseover}" """
-  if tagy.onmouseup != "":
-    atributes.add fmt"""onmouseup="{tagy.onmouseup}" """
-  if tagy.onmousewheel != "":
-    atributes.add fmt"""onmousewheel="{tagy.onmousewheel}" """
-  if tagy.onpause != "":
-    atributes.add fmt"""onpause="{tagy.onpause}" """
-  if unlikely(tagy.onplay != ""):
-    atributes.add fmt"""onplay="{tagy.onplay}" """
-  if unlikely(tagy.onplaying != ""):
-    atributes.add fmt"""onplaying="{tagy.onplaying}" """
-  if tagy.onprogress != "":
-    atributes.add fmt"""onprogress="{tagy.onprogress}" """
-  if unlikely(tagy.onratechange != ""):
-    atributes.add fmt"""onratechange="{tagy.onratechange}" """
-  if unlikely(tagy.onreset != ""):
-    atributes.add fmt"""onreset="{tagy.onreset}" """
-  if tagy.onresize != "":
-    atributes.add fmt"""onresize="{tagy.onresize}" """
-  if tagy.onscroll != "":
-    atributes.add fmt"""onscroll="{tagy.onscroll}" """
-  if unlikely(tagy.onseeked != ""):
-    atributes.add fmt"""onseeked="{tagy.onseeked}" """
-  if unlikely(tagy.onseeking != ""):
-    atributes.add fmt"""onseeking="{tagy.onseeking}" """
-  if tagy.onselect != "":
-    atributes.add fmt"""onselect="{tagy.onselect}" """
-  if tagy.onshow != "":
-    atributes.add fmt"""onshow="{tagy.onshow}" """
-  if unlikely(tagy.onstalled != ""):
-    atributes.add fmt"""onstalled="{tagy.onstalled}" """
-  if tagy.onsubmit != "":
-    atributes.add fmt"""onsubmit="{tagy.onsubmit}" """
-  if tagy.onsuspend != "":
-    atributes.add fmt"""onsuspend="{tagy.onsuspend}" """
-  if unlikely(tagy.ontimeupdate != ""):
-    atributes.add fmt"""ontimeupdate="{tagy.ontimeupdate}" """
-  if tagy.ontoggle != "":
-    atributes.add fmt"""ontoggle="{tagy.ontoggle}" """
-  if unlikely(tagy.onvolumechange != ""):
-    atributes.add fmt"""onvolumechange="{tagy.onvolumechange}" """
-  if tagy.onwaiting != "":
-    atributes.add fmt"""onwaiting="{tagy.onwaiting}" """
-  if unlikely(tagy.onafterprint != ""):
-    atributes.add fmt"""onafterprint="{tagy.onafterprint}" """
-  if unlikely(tagy.onbeforeprint != ""):
-    atributes.add fmt"""onbeforeprint="{tagy.onbeforeprint}" """
-  if tagy.onbeforeunload != "":
-    atributes.add fmt"""onbeforeunload="{tagy.onbeforeunload}" """
-  if unlikely(tagy.onhashchange != ""):
-    atributes.add fmt"""onhashchange="{tagy.onhashchange}" """
-  if tagy.onmessage != "":
-    atributes.add fmt"""onmessage="{tagy.onmessage}" """
-  if tagy.onoffline != "":
-    atributes.add fmt"""onoffline="{tagy.onoffline}" """
-  if tagy.ononline != "":
-    atributes.add fmt"""ononline="{tagy.ononline}" """
-  if unlikely(tagy.onpagehide != ""):
-    atributes.add fmt"""onpagehide="{tagy.onpagehide}" """
-  if unlikely(tagy.onpageshow != ""):
-    atributes.add fmt"""onpageshow="{tagy.onpageshow}" """
-  if unlikely(tagy.onpopstate != ""):
-    atributes.add fmt"""onpopstate="{tagy.onpopstate}" """
-  if unlikely(tagy.onstorage != ""):
-    atributes.add fmt"""onstorage="{tagy.onstorage}" """
-  if tagy.onunload != "":
-    atributes.add fmt"""onunload="{tagy.onunload}" """
-  if unlikely(tagy.onbounce != ""):
-    atributes.add fmt"""onbounce="{tagy.onbounce}" """
-  if tagy.onfinish != "":
-    atributes.add fmt"""onfinish="{tagy.onfinish}" """
-  if tagy.onstart != "":
-    atributes.add fmt"""onstart="{tagy.onstart}" """
-  if unlikely(tagy.disabled != ""):
+  if tagy.onabort.len.bool:
+    atributes.add "onabort=\"" & tagy.onabort & "\" "
+  if tagy.onblur.len.bool:
+    atributes.add "onblur=\"" & tagy.onblur & "\" "
+  if tagy.oncancel.len.bool:
+    atributes.add "oncancel=\"" & tagy.oncancel & "\" "
+  if unlikely(tagy.oncanplay.len.bool):
+    atributes.add "oncanplay=\"" & tagy.oncanplay & "\" "
+  if unlikely(tagy.oncanplaythrough.len.bool):
+    atributes.add "oncanplaythrough=\"" & tagy.oncanplaythrough & "\" "
+  if tagy.onchange.len.bool:
+    atributes.add "onchange=\"" & tagy.onchange & "\" "
+  if tagy.onclick.len.bool:
+    atributes.add "onclick=\"" & tagy.onclick & "\" "
+  if unlikely(tagy.oncuechange.len.bool):
+    atributes.add "oncuechange=\"" & tagy.oncuechange & "\" "
+  if tagy.ondblclick.len.bool:
+    atributes.add "ondblclick=\"" & tagy.ondblclick & "\" "
+  if tagy.ondurationchange.len.bool:
+    atributes.add "ondurationchange=\"" & tagy.ondurationchange & "\" "
+  if unlikely(tagy.onemptied.len.bool):
+    atributes.add "onemptied=\"" & tagy.onemptied & "\" "
+  if tagy.onended.len.bool:
+    atributes.add "onended=\"" & tagy.onended & "\" "
+  if tagy.onerror.len.bool:
+    atributes.add "onerror=\"" & tagy.onerror & "\" "
+  if tagy.onfocus.len.bool:
+    atributes.add "onfocus=\"" & tagy.onfocus & "\" "
+  if tagy.oninput.len.bool:
+    atributes.add "oninput=\"" & tagy.oninput & "\" "
+  if tagy.oninvalid.len.bool:
+    atributes.add "oninvalid=\"" & tagy.oninvalid & "\" "
+  if tagy.onkeydown.len.bool:
+    atributes.add "onkeydown=\"" & tagy.onkeydown & "\" "
+  if tagy.onkeypress.len.bool:
+    atributes.add "onkeypress=\"" & tagy.onkeypress & "\" "
+  if tagy.onkeyup.len.bool:
+    atributes.add "onkeyup=\"" & tagy.onkeyup & "\" "
+  if tagy.onload.len.bool:
+    atributes.add "onload=\"" & tagy.onload & "\" "
+  if tagy.onloadeddata.len.bool:
+    atributes.add "onloadeddata=\"" & tagy.onloadeddata & "\" "
+  if unlikely(tagy.onloadedmetadata.len.bool):
+    atributes.add "onloadedmetadata=\"" & tagy.onloadedmetadata & "\" "
+  if tagy.onloadstart.len.bool:
+    atributes.add "onloadstart=\"" & tagy.onloadstart & "\" "
+  if tagy.onmousedown.len.bool:
+    atributes.add "onmousedown=\"" & tagy.onmousedown & "\" "
+  if tagy.onmouseenter.len.bool:
+    atributes.add "onmouseenter=\"" & tagy.onmouseenter & "\" "
+  if tagy.onmouseleave.len.bool:
+    atributes.add "onmouseleave=\"" & tagy.onmouseleave & "\" "
+  if tagy.onmousemove.len.bool:
+    atributes.add "onmousemove=\"" & tagy.onmousemove & "\" "
+  if tagy.onmouseout.len.bool:
+    atributes.add "onmouseout=\"" & tagy.onmouseout & "\" "
+  if tagy.onmouseover.len.bool:
+    atributes.add "onmouseover=\"" & tagy.onmouseover & "\" "
+  if tagy.onmouseup.len.bool:
+    atributes.add "onmouseup=\"" & tagy.onmouseup & "\" "
+  if tagy.onmousewheel.len.bool:
+    atributes.add "onmousewheel=\"" & tagy.onmousewheel & "\" "
+  if tagy.onpause.len.bool:
+    atributes.add "onpause=\"" & tagy.onpause & "\" "
+  if unlikely(tagy.onplay.len.bool):
+    atributes.add "onplay=\"" & tagy.onplay & "\" "
+  if unlikely(tagy.onplaying.len.bool):
+    atributes.add "onplaying=\"" & tagy.onplaying & "\" "
+  if tagy.onprogress.len.bool:
+    atributes.add "onprogress=\"" & tagy.onprogress & "\" "
+  if unlikely(tagy.onratechange.len.bool):
+    atributes.add "onratechange=\"" & tagy.onratechange & "\" "
+  if unlikely(tagy.onreset.len.bool):
+    atributes.add "onreset=\"" & tagy.onreset & "\" "
+  if tagy.onresize.len.bool:
+    atributes.add "onresize=\"" & tagy.onresize & "\" "
+  if tagy.onscroll.len.bool:
+    atributes.add "onscroll=\"" & tagy.onscroll & "\" "
+  if unlikely(tagy.onseeked.len.bool):
+    atributes.add "onseeked=\"" & tagy.onseeked & "\" "
+  if unlikely(tagy.onseeking.len.bool):
+    atributes.add "onseeking=\"" & tagy.onseeking & "\" "
+  if tagy.onselect.len.bool:
+    atributes.add "onselect=\"" & tagy.onselect & "\" "
+  if tagy.onshow.len.bool:
+    atributes.add "onshow=\"" & tagy.onshow & "\" "
+  if unlikely(tagy.onstalled.len.bool):
+    atributes.add "onstalled=\"" & tagy.onstalled & "\" "
+  if tagy.onsubmit.len.bool:
+    atributes.add "onsubmit=\"" & tagy.onsubmit & "\" "
+  if tagy.onsuspend.len.bool:
+    atributes.add "onsuspend=\"" & tagy.onsuspend & "\" "
+  if unlikely(tagy.ontimeupdate.len.bool):
+    atributes.add "ontimeupdate=\"" & tagy.ontimeupdate & "\" "
+  if tagy.ontoggle.len.bool:
+    atributes.add "ontoggle=\"" & tagy.ontoggle & "\" "
+  if unlikely(tagy.onvolumechange.len.bool):
+    atributes.add "onvolumechange=\"" & tagy.onvolumechange & "\" "
+  if tagy.onwaiting.len.bool:
+    atributes.add "onwaiting=\"" & tagy.onwaiting & "\" "
+  if unlikely(tagy.onafterprint.len.bool):
+    atributes.add "onafterprint=\"" & tagy.onafterprint & "\" "
+  if unlikely(tagy.onbeforeprint.len.bool):
+    atributes.add "onbeforeprint=\"" & tagy.onbeforeprint & "\" "
+  if tagy.onbeforeunload.len.bool:
+    atributes.add "onbeforeunload=\"" & tagy.onbeforeunload & "\" "
+  if unlikely(tagy.onhashchange.len.bool):
+    atributes.add "onhashchange=\"" & tagy.onhashchange & "\" "
+  if tagy.onmessage.len.bool:
+    atributes.add "onmessage=\"" & tagy.onmessage & "\" "
+  if tagy.onoffline.len.bool:
+    atributes.add "onoffline=\"" & tagy.onoffline & "\" "
+  if tagy.ononline.len.bool:
+    atributes.add "ononline=\"" & tagy.ononline & "\" "
+  if unlikely(tagy.onpagehide.len.bool):
+    atributes.add "onpagehide=\"" & tagy.onpagehide & "\" "
+  if unlikely(tagy.onpageshow.len.bool):
+    atributes.add "onpageshow=\"" & tagy.onpageshow & "\" "
+  if unlikely(tagy.onpopstate.len.bool):
+    atributes.add "onpopstate=\"" & tagy.onpopstate & "\" "
+  if unlikely(tagy.onstorage.len.bool):
+    atributes.add "onstorage=\"" & tagy.onstorage & "\" "
+  if tagy.onunload.len.bool:
+    atributes.add "onunload=\"" & tagy.onunload & "\" "
+  if unlikely(tagy.onbounce.len.bool):
+    atributes.add "onbounce=\"" & tagy.onbounce & "\" "
+  if tagy.onfinish.len.bool:
+    atributes.add "onfinish=\"" & tagy.onfinish & "\" "
+  if tagy.onstart.len.bool:
+    atributes.add "onstart=\"" & tagy.onstart & "\" "
+  if unlikely(tagy.disabled.len.bool):
     atributes.add "disabled "
-  if tagy.crossorigin != "":
-    atributes.add fmt"""crossorigin="{tagy.crossorigin}" """
-  if unlikely(tagy.hreflang != ""):
-    atributes.add fmt"""hreflang="{tagy.hreflang}" """
-  if tagy.form != "":
-    atributes.add fmt"""form="{tagy.form}" """
-  if tagy.maxlength != "":
-    atributes.add fmt"""maxlength="{tagy.maxlength}" """
-  if tagy.minlength != "":
-    atributes.add fmt"""minlength="{tagy.minlength}" """
-  if tagy.placeholder != "":
-    atributes.add fmt"""placeholder="{tagy.placeholder}" """
-  if tagy.readonly != "":
+  if tagy.crossorigin.len.bool:
+    atributes.add "crossorigin=\"" & tagy.crossorigin & "\" "
+  if unlikely(tagy.hreflang.len.bool):
+    atributes.add "hreflang=\"" & tagy.hreflang & "\" "
+  if tagy.form.len.bool:
+    atributes.add "form=\"" & tagy.form & "\" "
+  if tagy.maxlength.len.bool:
+    atributes.add "maxlength=\"" & tagy.maxlength & "\" "
+  if tagy.minlength.len.bool:
+    atributes.add "minlength=\"" & tagy.minlength & "\" "
+  if tagy.placeholder.len.bool:
+    atributes.add "placeholder=\"" & tagy.placeholder & "\" "
+  if tagy.readonly.len.bool:
     atributes.add "readonly "
-  if tagy.required != "":
+  if tagy.required.len.bool:
     atributes.add "required "
-  if unlikely(tagy.coords != ""):
-    atributes.add fmt"""coords="{tagy.coords}" """
-  if unlikely(tagy.download != ""):
-    atributes.add fmt"""download="{tagy.download}" """
-  if tagy.href != "":
-    atributes.add fmt"""href="{tagy.href}" """
-  if tagy.rel != "":
-    atributes.add fmt"""rel="{tagy.rel}" """
-  if unlikely(tagy.shape != ""):
-    atributes.add fmt"""shape="{tagy.shape}" """
-  if tagy.target != "":
-    atributes.add fmt"""target="{tagy.target}" """
-  if tagy.preload != "":
-    atributes.add fmt"""preload="{tagy.preload}" """
-  if tagy.autoplay != "":
+  if unlikely(tagy.coords.len.bool):
+    atributes.add "coords=\"" & tagy.coords & "\" "
+  if unlikely(tagy.download.len.bool):
+    atributes.add "download=\"" & tagy.download & "\" "
+  if tagy.href.len.bool:
+    atributes.add "href=\"" & tagy.href & "\" "
+  if tagy.rel.len.bool:
+    atributes.add "rel=\"" & tagy.rel & "\" "
+  if unlikely(tagy.shape.len.bool):
+    atributes.add "shape=\"" & tagy.shape & "\" "
+  if tagy.target.len.bool:
+    atributes.add "target=\"" & tagy.target & "\" "
+  if tagy.preload.len.bool:
+    atributes.add "preload=\"" & tagy.preload & "\" "
+  if tagy.autoplay.len.bool:
     atributes.add "autoplay "
-  if unlikely(tagy.mediagroup != ""):
-    atributes.add fmt"""mediagroup="{tagy.mediagroup}" """
-  if unlikely(tagy.loop != ""):
-    atributes.add fmt"""loop="{tagy.loop}" """
-  if unlikely(tagy.muted != ""):
-    atributes.add fmt"""muted="{tagy.muted}" """
-  if unlikely(tagy.controls != ""):
+  if unlikely(tagy.mediagroup.len.bool):
+    atributes.add "mediagroup=\"" & tagy.mediagroup & "\" "
+  if unlikely(tagy.loop.len.bool):
+    atributes.add "loop=\"" & tagy.loop & "\" "
+  if unlikely(tagy.muted.len.bool):
+    atributes.add "muted=\"" & tagy.muted & "\" "
+  if unlikely(tagy.controls.len.bool):
     atributes.add "controls "
-  if unlikely(tagy.poster != ""):
-    atributes.add fmt"""poster="{tagy.poster}" """
-  if tagy.open != "":
+  if unlikely(tagy.poster.len.bool):
+    atributes.add "poster=\"" & tagy.poster & "\" "
+  if tagy.open.len.bool:
     atributes.add "open "
-  if tagy.action != "":
-    atributes.add fmt"""action="{tagy.action}" """
-  if unlikely(tagy.enctype != ""):
-    atributes.add fmt"""enctype="{tagy.enctype}" """
-  if unlikely(tagy.novalidate != ""):
-    atributes.add fmt"""novalidate="{tagy.novalidate}" """
-  if unlikely(tagy.srcdoc != ""):
-    atributes.add fmt"""srcdoc="{tagy.srcdoc}" """
-  if unlikely(tagy.sandbox != ""):
-    atributes.add fmt"""sandbox="{tagy.sandbox}" """
-  if unlikely(tagy.usemap != ""):
-    atributes.add fmt"""usemap="{tagy.usemap}" """
-  if unlikely(tagy.ismap != ""):
-    atributes.add fmt"""ismap="{tagy.ismap}" """
-  if tagy.accept != "":
-    atributes.add fmt"""accept="{tagy.accept}" """
-  if tagy.alt != "":
-    atributes.add fmt"""alt="{tagy.alt}" """
-  if tagy.autocomplete != "":
+  if tagy.action.len.bool:
+    atributes.add "action=\"" & tagy.action & "\" "
+  if unlikely(tagy.enctype.len.bool):
+    atributes.add "enctype=\"" & tagy.enctype & "\" "
+  if unlikely(tagy.novalidate.len.bool):
+    atributes.add "novalidate=\"" & tagy.novalidate & "\" "
+  if unlikely(tagy.srcdoc.len.bool):
+    atributes.add "srcdoc=\"" & tagy.srcdoc & "\" "
+  if unlikely(tagy.sandbox.len.bool):
+    atributes.add "sandbox=\"" & tagy.sandbox & "\" "
+  if unlikely(tagy.usemap.len.bool):
+    atributes.add "usemap=\"" & tagy.usemap & "\" "
+  if unlikely(tagy.ismap.len.bool):
+    atributes.add "ismap=\"" & tagy.ismap & "\" "
+  if tagy.accept.len.bool:
+    atributes.add "accept=\"" & tagy.accept & "\" "
+  if tagy.alt.len.bool:
+    atributes.add "alt=\"" & tagy.alt & "\" "
+  if tagy.autocomplete.len.bool:
     atributes.add "autocomplete "
-  if tagy.autofocus != "":
+  if tagy.autofocus.len.bool:
     atributes.add "autofocus "
-  if tagy.checked != "":
+  if tagy.checked.len.bool:
     atributes.add "checked "
-  if tagy.dirname != "":
-    atributes.add fmt"""dirname="{tagy.dirname}" """
-  if tagy.formaction != "":
-    atributes.add fmt"""formaction="{tagy.formaction}" """
-  if tagy.formenctype != "":
-    atributes.add fmt"""formenctype="{tagy.formenctype}" """
-  if tagy.formmethod != "":
-    atributes.add fmt"""formmethod="{tagy.formmethod}" """
-  if unlikely(tagy.formnovalidate != ""):
-    atributes.add fmt"""formnovalidate="{tagy.formnovalidate}" """
-  if tagy.formtarget != "":
-    atributes.add fmt"""formtarget="{tagy.formtarget}" """
-  if tagy.inputmode != "":
-    atributes.add fmt"""inputmode="{tagy.inputmode}" """
-  if unlikely(tagy.list != ""):
-    atributes.add fmt"""list="{tagy.list}" """
-  if unlikely(tagy.max != ""):
-    atributes.add fmt"""max="{tagy.max}" """
-  if unlikely(tagy.min != ""):
-    atributes.add fmt"""min="{tagy.min}" """
-  if unlikely(tagy.multiple != ""):
-    atributes.add fmt"""multiple="{tagy.multiple}" """
-  if unlikely(tagy.pattern != ""):
-    atributes.add fmt"""pattern="{tagy.pattern}" """
-  if tagy.size != "":
-    atributes.add fmt"""size="{tagy.size}" """
-  if tagy.step != "":
-    atributes.add fmt"""step="{tagy.step}" """
-  if tagy.`type` != "":
-    atributes.add fmt"""type="{tagy.`type`}" """
-  if tagy.value != "":
-    atributes.add fmt"""value="{tagy.value}" """
-  if tagy.`for` != "":
-    atributes.add fmt"""for="{tagy.`for`}" """
-  if tagy.`async` != "":
+  if tagy.dirname.len.bool:
+    atributes.add "dirname=\"" & tagy.dirname & "\" "
+  if tagy.formaction.len.bool:
+    atributes.add "formaction=\"" & tagy.formaction & "\" "
+  if tagy.formenctype.len.bool:
+    atributes.add "formenctype=\"" & tagy.formenctype & "\" "
+  if tagy.formmethod.len.bool:
+    atributes.add "formmethod=\"" & tagy.formmethod & "\" "
+  if unlikely(tagy.formnovalidate.len.bool):
+    atributes.add "formnovalidate=\"" & tagy.formnovalidate & "\" "
+  if tagy.formtarget.len.bool:
+    atributes.add "formtarget=\"" & tagy.formtarget & "\" "
+  if tagy.inputmode.len.bool:
+    atributes.add "inputmode=\"" & tagy.inputmode & "\" "
+  if unlikely(tagy.list.len.bool):
+    atributes.add "list=\"" & tagy.list & "\" "
+  if unlikely(tagy.max.len.bool):
+    atributes.add "max=\"" & tagy.max & "\" "
+  if unlikely(tagy.min.len.bool):
+    atributes.add "min=\"" & tagy.min & "\" "
+  if unlikely(tagy.multiple.len.bool):
+    atributes.add "multiple=\"" & tagy.multiple & "\" "
+  if unlikely(tagy.pattern.len.bool):
+    atributes.add "pattern=\"" & tagy.pattern & "\" "
+  if tagy.size.len.bool:
+    atributes.add "size=\"" & tagy.size & "\" "
+  if tagy.step.len.bool:
+    atributes.add "step=\"" & tagy.step & "\" "
+  if tagy.`type`.len.bool:
+    atributes.add "type=\"" & tagy.`type` & "\" "
+  if tagy.value.len.bool:
+    atributes.add "value=\"" & tagy.value & "\" "
+  if tagy.`for`.len.bool:
+    atributes.add "for=\"" & tagy.`for` & "\" "
+  if tagy.`async`.len.bool:
     atributes.add "async "
-  if tagy.`defer` != "":
+  if tagy.`defer`.len.bool:
     atributes.add "defer "
-  if unlikely(tagy.behavior != ""):
-    atributes.add fmt"""behavior="{tagy.behavior}" """
-  if unlikely(tagy.bgcolor != ""):
-    atributes.add fmt"""bgcolor="{tagy.bgcolor}" """
-  if unlikely(tagy.direction != ""):
-    atributes.add fmt"""direction="{tagy.direction}" """
-  if unlikely(tagy.hspace != ""):
-    atributes.add fmt"""hspace="{tagy.hspace}" """
-  if unlikely(tagy.scrollamount != ""):
-    atributes.add fmt"""scrollamount="{tagy.scrollamount}" """
-  if unlikely(tagy.scrolldelay != ""):
-    atributes.add fmt"""scrolldelay="{tagy.scrolldelay}" """
-  if unlikely(tagy.truespeed != ""):
-    atributes.add fmt"""truespeed="{tagy.truespeed}" """
-  if unlikely(tagy.vspace != ""):
-    atributes.add fmt"""vspace="{tagy.vspace}" """
-  if unlikely(tagy.optimum != ""):
-    atributes.add fmt"""optimum="{tagy.optimum}" """
-  if tagy.selected != "":
+  if unlikely(tagy.behavior.len.bool):
+    atributes.add "behavior=\"" & tagy.behavior & "\" "
+  if unlikely(tagy.bgcolor.len.bool):
+    atributes.add "bgcolor=\"" & tagy.bgcolor & "\" "
+  if unlikely(tagy.direction.len.bool):
+    atributes.add "direction=\"" & tagy.direction & "\" "
+  if unlikely(tagy.hspace.len.bool):
+    atributes.add "hspace=\"" & tagy.hspace & "\" "
+  if unlikely(tagy.scrollamount.len.bool):
+    atributes.add "scrollamount=\"" & tagy.scrollamount & "\" "
+  if unlikely(tagy.scrolldelay.len.bool):
+    atributes.add "scrolldelay=\"" & tagy.scrolldelay & "\" "
+  if unlikely(tagy.truespeed.len.bool):
+    atributes.add "truespeed=\"" & tagy.truespeed & "\" "
+  if unlikely(tagy.vspace.len.bool):
+    atributes.add "vspace=\"" & tagy.vspace & "\" "
+  if unlikely(tagy.optimum.len.bool):
+    atributes.add "optimum=\"" & tagy.optimum & "\" "
+  if tagy.selected.len.bool:
     atributes.add "selected "
-  if tagy.colspan != "":
-    atributes.add fmt"""colspan="{tagy.colspan}" """
-  if tagy.rowspan != "":
-    atributes.add fmt"""rowspan="{tagy.rowspan}" """
-  if tagy.headers != "":
-    atributes.add fmt"""headers="{tagy.headers}" """
-  if tagy.cols != "":
-    atributes.add fmt"""cols="{tagy.cols}" """
-  if tagy.rows != "":
-    atributes.add fmt"""rows="{tagy.rows}" """
-  if tagy.wrap != "":
-    atributes.add fmt"""wrap="{tagy.wrap}" """
+  if tagy.colspan.len.bool:
+    atributes.add "colspan=\"" & tagy.colspan & "\" "
+  if tagy.rowspan.len.bool:
+    atributes.add "rowspan=\"" & tagy.rowspan & "\" "
+  if tagy.headers.len.bool:
+    atributes.add "headers=\"" & tagy.headers & "\" "
+  if tagy.cols.len.bool:
+    atributes.add "cols=\"" & tagy.cols & "\" "
+  if tagy.rows.len.bool:
+    atributes.add "rows=\"" & tagy.rows & "\" "
+  if tagy.wrap.len.bool:
+    atributes.add "wrap=\"" & tagy.wrap & "\" "
   when not defined(release):  # No one uses contenteditable on Prod.
-    if tagy.contenteditable != false:
+    if tagy.contenteditable:
       atributes.add """contenteditable="true" """
   result =
     when defined(release): atributes.join.strip(trailing=true)
@@ -626,8 +626,8 @@ func render(this: HtmlNode): string {.discardable.} =
   case this.kind:
   of nkhtml:
     result =
-      when defined(release): "<!DOCTYPE html>" & fmt"<html class='has-navbar-fixed-top'{atributos}>"
-      else: "<!DOCTYPE html>\n  " & fmt"<html class='has-navbar-fixed-top'{atributos}>" & "\n"
+      when defined(release): "<!DOCTYPE html>" & "<html class='has-navbar-fixed-top'" & atributos & ">"
+      else: "<!DOCTYPE html>\n  " & "<html class='has-navbar-fixed-top'" & atributos & ">\n"
   of nkhead:
     result =
       when defined(release): "<head>" & basic_head_tags
@@ -638,48 +638,48 @@ func render(this: HtmlNode): string {.discardable.} =
       else: "<title>" & this.val & "</title>\n"
   of nkmeta:
     result =
-      when defined(release): fmt"<meta{atributos}>"
-      else: fmt"<meta {atributos}>" & "\n"
+      when defined(release): "<meta" & atributos & ">"
+      else: "<meta" & atributos & ">\n"
   of nkbody:
     result =
-      when defined(release): fmt"<body class='has-navbar-fixed-top'{atributos}>"
-      else: fmt"<body class='has-navbar-fixed-top'{atributos}>" & "\n"
+      when defined(release): "<body class='has-navbar-fixed-top'" & atributos & ">"
+      else: "<body class='has-navbar-fixed-top'" & atributos & ">\n"
   of nkArticle:
     result =
-      when defined(release): fmt"<article class='message'{atributos}>"
-      else: fmt"<article class='message'{atributos}>" & "\n"
+      when defined(release): "<article class='message'" & atributos & ">"
+      else: "<article class='message'" & atributos & ">\n"
   of nkButton:
     result =
-      when defined(release): fmt"<button class='button is-light is-rounded btn tooltip'{atributos}>"
-      else: fmt"<button class='button is-light is-rounded btn tooltip'{atributos}>" & "\n"
+      when defined(release): "<button class='button is-light is-rounded btn tooltip'" & atributos & ">"
+      else: "<button class='button is-light is-rounded btn tooltip'" & atributos & ">\n"
   of nkDetails:
     result =
-      when defined(release): fmt"<details class='message is-dark'{atributos}>"
-      else: fmt"<details class='message is-dark'{atributos}>" & "\n"
+      when defined(release): "<details class='message is-dark'" & atributos & ">"
+      else: "<details class='message is-dark'" & atributos & ">\n"
   of nkDialog:
     result =
-      when defined(release): fmt"<dialog class='notification is-rounded modal'{atributos}>"
-      else: fmt"<dialog class='notification is-rounded modal'{atributos}>" & "\n"
+      when defined(release): "<dialog class='notification is-rounded modal'" & atributos & ">"
+      else: "<dialog class='notification is-rounded modal'" & atributos & ">\n"
   of nkFooter:
     result =
-      when defined(release): fmt"<footer class='footer is-fullwidth'{atributos}>"
-      else: fmt"<footer class='footer is-fullwidth'{atributos}>" & "\n"
+      when defined(release): "<footer class='footer is-fullwidth'" & atributos & ">"
+      else: "<footer class='footer is-fullwidth'" & atributos & ">\n"
   of nkH1:
     result =
-      when defined(release): fmt"<h1 class='title'{atributos}>"
-      else: fmt"<h1 class='title'{atributos}>" & "\n"
+      when defined(release): "<h1 class='title'" & atributos & ">"
+      else: "<h1 class='title'" & atributos & ">\n"
   of nkImg:
     result =
-      when defined(release): fmt"<img class='image img-responsive'{atributos}\>"
-      else: fmt"<img class='image img-responsive'{atributos}\>" & "\n"
+      when defined(release): "<img class='image img-responsive'" & atributos & "\\>"
+      else: "<img class='image img-responsive'" & atributos & "\\>\n"
   of nkLabel:
     result =
-      when defined(release): fmt"<label class='label form-label'{atributos}>"
-      else: fmt"<label class='label form-label'{atributos}>" & "\n"
+      when defined(release): "<label class='label form-label'" & atributos & ">"
+      else: "<label class='label form-label'" & atributos & ">\n"
   of nkMeter:
     result =
-      when defined(release): fmt"<meter class='progress is-small bar-item' role='progressbar'{atributos}>"
-      else: fmt"<meter class='progress is-small bar-item' role='progressbar'{atributos}>" & "\n"
+      when defined(release): "<meter class='progress is-small bar-item' role='progressbar'" & atributos & ">"
+      else: "<meter class='progress is-small bar-item' role='progressbar'" & atributos & ">\n"
   of nkComment:
     result =
       when defined(release): "<!-- " & this.text.strip
@@ -688,8 +688,8 @@ func render(this: HtmlNode): string {.discardable.} =
     var tagy = $this.kind
     tagy = tagy.replace("nk", "").toLowerAscii
     result =
-      when defined(release): fmt"<{tagy}{atributos}>{this.text}</{tagy}>"
-      else: fmt"<{tagy}{atributos}>{this.text}</{tagy}>" & "\n"
+      when defined(release): "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">"
+      else: "<" & tagy & atributos & ">" & this.text & "</" & tagy & ">\n"
 
 func close(this: HtmlNode): string {.discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
