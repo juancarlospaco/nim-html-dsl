@@ -32,7 +32,6 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
   class: string
   name: string
   accesskey: string
-  dir: string
   src: string
   tabindex: string
   translate: string
@@ -220,8 +219,6 @@ func attributter(tagy: HtmlNode): string =
     atributes.add "name=\"" & tagy.name & "\" "
   if unlikely(tagy.accesskey.len > 0):
     atributes.add "accesskey=\"" & tagy.accesskey & "\" "
-  if unlikely(tagy.dir.len > 0):
-    atributes.add "dir=\"" & tagy.dir & "\" "
   if tagy.src.len > 0:
     atributes.add "src=\"" & tagy.src & "\" "
   if unlikely(tagy.tabindex.len > 0):
@@ -508,37 +505,40 @@ func attributter(tagy: HtmlNode): string =
     atributes.add "wrap=\"" & tagy.wrap & "\" "
   if tagy.httpequiv.len > 0:
     atributes.add "http-equiv=\"" & tagy.httpequiv & "\" "
+  if tagy.content.len > 0:
+    atributes.add "content=\"" & tagy.content & "\" "
   when not defined(release):  # No one uses contenteditable on Prod.
     if tagy.contenteditable:
       atributes.add """contenteditable="true" """
-  result =
-    when defined(release): atributes.join.strip(trailing=true)
-    else:                  atributes.join
+  result = atributes.join.strip(leading=false)
 
 func render_tag(this: HtmlNode): string {.discardable.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
-  let atributos = attributter(this)
+  # TODO: https://dev.to/bitario/psa-add-dirauto-to-your-inputs-and-textareas-blc
+  var atributos: string
+  if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]:
+    atributos = attributter(this)
   case this.kind
-  of nkhtml:
+  of nkHtml:
     result =
-      when defined(release): "<!DOCTYPE html>" & "<html class='has-navbar-fixed-top'" & atributos & ">"
-      else: "<!DOCTYPE html>\n  " & "<html class='has-navbar-fixed-top'" & atributos & ">\n"
-  of nkhead:
+      when defined(release): "<!DOCTYPE html><html class='has-navbar-fixed-top'>"
+      else: "<!DOCTYPE html>\n  <html class='has-navbar-fixed-top'>\n"
+  of nkHead:
     result =
       when defined(release): "<head>" & basic_head_tags
       else: "<head>\n  " & basic_head_tags
-  of nktitle:
+  of nkTitle:
     result =
       when defined(release): "<title>" & this.text & "</title>"
       else: "<title>" & this.text & "</title>\n"
-  of nkmeta:
+  of nkMeta:
     result =
       when defined(release): "<meta" & atributos & ">"
       else: "<meta" & atributos & ">\n"
-  of nkbody:
+  of nkBody:
     result =
-      when defined(release): "<body class='has-navbar-fixed-top'" & atributos & ">"
-      else: "<body class='has-navbar-fixed-top'" & atributos & ">\n"
+      when defined(release): "<body class='has-navbar-fixed-top'>"
+      else: "<body class='has-navbar-fixed-top'>\n"
   of nkArticle:
     result =
       when defined(release): "<article class='message'" & atributos & ">"

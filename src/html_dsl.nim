@@ -50,8 +50,6 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
   result.class = class
   result.rel = rel
 
-
-
 func meta*(name, content, httpequiv: string): HtmlNode =
   HtmlNode(kind: nkMeta, name: name, content: content, httpequiv: httpequiv)
 
@@ -158,8 +156,8 @@ func render*(this: HtmlNode): string =
 when isMainModule:
   html page:
     head:
-      title("Title")
-      meta("foo", "bar", "baz")
+      title "Title"
+      meta "foo", "bar", "baz"
     body:
       p("Hello")
       p("World")
