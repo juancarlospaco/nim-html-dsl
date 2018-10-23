@@ -20,6 +20,9 @@ const can_have_children = [
   nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
   nkTrack, nkTt, nkU, nkUl]  ## All Tags that can possibly have childrens.
 
+
+
+
 func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode =
   result = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link)
 
@@ -123,15 +126,15 @@ template render_indent(thingy, indentation_level: untyped): untyped =
   when defined(release): thingy
   else: indent(thingy, indentation_level)
 
-func transpile*(this: HtmlNode): string =
-  ## Transpiler calls render with indentation on HtmlNode types return string.
+func render*(this: HtmlNode): string =
+  ## Render HtmlNode with indentation return string.
   var indentation_level: byte # indent level, 0 ~ 255.
   case this.kind
   of nkhtml:                    # <html>
     result &= render_tag this
     inc indentation_level
-    result &= render_indent(transpile(this.head), indentation_level)
-    result &= render_indent(transpile(this.body), indentation_level)
+    result &= render_indent(render(this.head), indentation_level)
+    result &= render_indent(render(this.body), indentation_level)
     dec indentation_level
     result &= close_tag this
   of nkhead:                    # <head>
@@ -149,7 +152,7 @@ func transpile*(this: HtmlNode): string =
     inc indentation_level
     for tag in this.sons:
       if tag.kind in can_have_children:
-        result &= render_indent(transpile(tag), indentation_level)
+        result &= render_indent(render(tag), indentation_level)
       else:
         result &= render_indent(render_tag(tag), indentation_level)
     dec indentation_level
@@ -169,7 +172,7 @@ func transpile*(this: HtmlNode): string =
     inc indentation_level
     for tag in this.sons:
       if tag.kind in can_have_children:
-        result &= render_indent(transpile(tag), indentation_level)
+        result &= render_indent(render(tag), indentation_level)
       else:
         result &= render_indent(render_tag(tag), indentation_level)
     dec indentation_level
@@ -191,4 +194,4 @@ when isMainModule:
       dv:
         p "Example"
 
-  echo transpile(page())
+  echo render(page())
