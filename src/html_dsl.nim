@@ -66,16 +66,6 @@ macro body*(inner: untyped): HtmlNode =
   inner.copychildrento(result)
 
 
-func newHtml*(h, b: HtmlNode): HtmlNode =
-  result = HtmlNode(kind: nkHtml, head: h, body: b)
-
-macro html*(name: untyped, inner: untyped): typed =
-  let h = inner[0]
-  let b = inner[1]
-  var rs = newCall("newHtml", h, b)
-  result = quote do:
-    proc `name`(): HtmlNode {.inline.} = `rs`
-
 
 func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
   result = HtmlNode(kind: nkA, href: href, text: val)
@@ -85,9 +75,18 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
 
 
 
+func newHtml*(head, body: HtmlNode): HtmlNode =
+  ## Create a new ``<html>`` tag Node, containing a ``<head>`` and ``<body>``.
+  HtmlNode(kind: nkHtml, head: head, body: body)
+
+macro html*(name: untyped, inner: untyped): typed =
+  ## Macro to create a new call to ``newHtml()``, passing Head and Body as arg.
+  var rs = newCall("newHtml", inner[0], inner[1])
+  result = quote do:
+    func `name`(): HtmlNode {.inline.} = `rs`
 
 template render_indent(thingy, indentation_level: untyped): untyped =
-  ## Render Pretty-Printed with indentation when build for Release,else Minified.
+  ## Render Pretty-Printed with indentation when build for Release,else Minified
   when defined(release): thingy
   else: indent(thingy, indentation_level)
 
@@ -147,9 +146,6 @@ func render*(this: HtmlNode): string =
 
 
 when isMainModule:
-  var x = 2
-  let author = "Juan"
-
   html page:
     head:
       title("Title")
@@ -158,5 +154,4 @@ when isMainModule:
       p("World")
       dv:
         p "Example"
-
   echo render(page())
