@@ -55,15 +55,7 @@ macro dv*(inner: untyped): HtmlNode =
   inner.copychildrento(result)
 
 
-func newBody*(sons: varargs[HtmlNode]): HtmlNode =
-  result = HtmlNode(kind: nkBody, sons: @sons)
 
-macro body*(inner: untyped): HtmlNode =
-  assert inner.len >= 1, "Body Error: Wrong number of inner elements:" & $inner.len
-  result = newCall("newBody")
-  if inner.len == 1:
-    result.add(inner)
-  inner.copychildrento(result)
 
 
 
@@ -75,20 +67,33 @@ func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
 
 
 
+
+
+
+func newBody*(sons: varargs[HtmlNode]): HtmlNode =
+  HtmlNode(kind: nkBody, sons: @sons)
+
+macro body*(inner: untyped): HtmlNode =
+  assert inner.len >= 1, "Body Error: Wrong number of inner tags:" & $inner.len
+  result = newCall("newBody")
+  if inner.len == 1:
+    result.add(inner)
+  inner.copychildrento(result)
+
 func newHtml*(head, body: HtmlNode): HtmlNode =
   ## Create a new ``<html>`` tag Node, containing a ``<head>`` and ``<body>``.
   HtmlNode(kind: nkHtml, head: head, body: body) # Head & Body have childrens.
 
 macro html*(name: untyped, inner: untyped): typed =
   ## Macro to create a new call to ``newHtml()``, passing Head and Body as arg.
-  var rs = newCall("newHtml", inner[0], inner[1])
+  var rs = newCall("newHtml", inner[0], inner[1])  # Call newHtml(head, body)
   result = quote do:
-    func `name`(): HtmlNode {.inline.} = `rs`
+    func `name`(): HtmlNode {.inline.} = `rs` # Do name() = newHtml(head, body)
 
 template render_indent(thingy, indentation_level: untyped): untyped =
   ## Render Pretty-Printed with indentation when build for Release,else Minified
-  when defined(release): thingy
-  else: indent(thingy, indentation_level)
+  when defined(release): thingy           # Release, Minified for Performance.
+  else: indent(thingy, indentation_level) # Development, use the Indentations.
 
 func render*(this: HtmlNode): string =
   ## Render HtmlNode with indentation return string.
