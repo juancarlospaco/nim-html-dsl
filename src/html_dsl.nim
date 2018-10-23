@@ -18,7 +18,7 @@ const can_have_children = [
   nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
   nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
   nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
-  nkTrack, nkTt, nkU, nkUl]
+  nkTrack, nkTt, nkU, nkUl]  ## All Tags that can possibly have childrens.
 
 func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode =
   result = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link)
@@ -127,24 +127,24 @@ func transpile*(this: HtmlNode): string =
   ## Transpiler calls render with indentation on HtmlNode types return string.
   var indentation_level: byte # indent level, 0 ~ 255.
   case this.kind
-  of nkhtml:
+  of nkhtml:                    # <html>
     result &= render_tag this
     inc indentation_level
     result &= render_indent(transpile(this.head), indentation_level)
     result &= render_indent(transpile(this.body), indentation_level)
     dec indentation_level
     result &= close_tag this
-  of nkhead:
+  of nkhead:                    # <head>
     result &= render_tag this
     inc indentation_level
-    for meta_tag in this.meta:   # <meta ... >
+    for meta_tag in this.meta:  # <meta ... >
       result &= render_indent(render_tag(meta_tag), indentation_level)
-    for link_tag in this.link:   # <link ... >
+    for link_tag in this.link:  # <link ... >
       result &= render_indent(render_tag(link_tag), indentation_level)
     result &= render_indent(render_tag(this.title), indentation_level)
     dec indentation_level
     result &= close_tag this
-  of nkBody:
+  of nkBody:                    # <body>
     result &= render_tag this
     inc indentation_level
     for tag in this.sons:
@@ -154,17 +154,17 @@ func transpile*(this: HtmlNode): string =
         result &= render_indent(render_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
-  of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi,
-     nkBdo, nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption,
-     nkCenter, nkCol, nkColgroup, nkData, nkDatalist, nkDd, nkDel,
-     nkDetails, nkDfn, nkDialog, nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset,
-     nkFigure, nkFigcaption, nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6,
-     nkHeader, nkI, nkImg, nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain,
-     nkMap, nkMark, nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption,
-     nkOutput, nkParam, nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc,
-     nkRuby, nkS, nkSamp, nkSection, nkSelect, nkSmall, nkSource, nkSpan,
-     nkStrong, nkSub, nkSummary, nkSup, nkTable, nkTbody, nkTd, nkTemplate,
-     nkTfoot, nkTh, nkThead, nkTr, nkTrack, nkTt, nkU, nkUl:
+  of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
+     nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
+     nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
+     nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
+     nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI, nkImg,
+     nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
+     nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
+     nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
+     nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
+     nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
+     nkTrack, nkTt, nkU, nkUl:  # All other tags
     result &= render_tag this
     inc indentation_level
     for tag in this.sons:
