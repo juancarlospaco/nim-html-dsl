@@ -634,9 +634,10 @@ func open_tag(this: HtmlNode): string {.discardable.} =
     result =
       when defined(release): "<nav class='navbar is-fixed-top is-light' role=\"navigation\"" & atributos & ">"
       else: "<nav class='navbar is-fixed-top is-light' role=\"navigation\"" & atributos & ">\n"
-
-
-
+  of nkHr:
+    result = "<hr>"
+  of nkBr:
+    result = "<br>"
   of nkComment:
     result =
       when defined(release): "<!-- " & this.text.strip & " -->"
@@ -660,7 +661,7 @@ func close_tag(this: HtmlNode): string {.discardable.} =
     result =
       when defined(release): " -->"
       else: "  -->\n\n"
-  of nkTitle, nkMeta, nkLink, nkImg:
+  of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr:
     result = ""  # These tags dont need Closing Tag.
   of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
       nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
