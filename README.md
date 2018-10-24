@@ -67,3 +67,14 @@ Build for Release:
 - 255 Levels of indentation maximum.
 - HTML Comments supported.
 - No XHTML, dont be Valid XML but be HTML5.
+
+
+# FAQ
+
+- Whats the Performance cost of using this?.
+
+0. Zero. None. Everything is done at Compile-Time.
+
+- Can be used with Jester?.
+
+Yes.
