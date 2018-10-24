@@ -202,7 +202,8 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
 #       result &= "\n" & $tag
 
 func `$`*(this: HtmlNode): string =
-  result = $this.kind & ": "  # Change to .repr()
+  ## Stringify an ``HtmlNode``.
+  result = $this.kind & ": "
   if this.children.len > 0:
     for tag in this.children:
       result &= "\n" & $tag
