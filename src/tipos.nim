@@ -663,26 +663,9 @@ func close_tag(this: HtmlNode): string {.discardable.} =
       else: "  -->\n\n"
   of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr:
     result = ""  # These tags dont need Closing Tag.
-  of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
-      nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
-      nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
-      nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
-      nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI,
-      nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
-      nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
-      nkPicture, nkPre, nkP, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
-      nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
-      nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
-      nkTrack, nkTt, nkU, nkUl, nkBody, nkHead:
-    var tagy = $this.kind
-    tagy = tagy[2 ..< len(tagy)].toLowerAscii
-    result =
-      when defined(release): "</" & tagy & ">"
-      else: "</" & tagy & ">\n"
   else:
     var tagy = $this.kind
     tagy = tagy[2 ..< len(tagy)].toLowerAscii
     result =
       when defined(release): "</" & tagy & ">"
       else: "</" & tagy & ">\n"
-    debugEcho "close_tag() else: " & toUpperAscii($this.kind)
