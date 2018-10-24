@@ -20,7 +20,7 @@ const can_have_children = [
   nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
   nkTrack, nkTt, nkU, nkUl]  ## All Tags that can possibly have childrens.
 
-
+var conta: int
 
 
 
@@ -60,9 +60,14 @@ func link*(href: string, hreflang="", crossorigin="", integrity="", media="", re
   HtmlNode(kind: nkLink, href: href, crossorigin: crossorigin, integrity: integrity,
            media: media, referrerpolicy: referrerpolicy, sizes: sizes, hreflang: hreflang)
 
-func meta*(name, content: string, httpequiv=""): HtmlNode =
+proc meta*(name, content: string, httpequiv=""): HtmlNode =
   ## Create a new ``<meta>`` tag Node with name,content,httpequiv. No children.
-  HtmlNode(kind: nkMeta, name: name, content: content, httpequiv: httpequiv)
+  echo conta
+  result = HtmlNode(kind: nkMeta, name: name, content: content, httpequiv: httpequiv)
+
+
+
+
 
 func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode =
   ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
@@ -90,7 +95,7 @@ macro body*(inner: untyped): HtmlNode =
   if inner.len == 1: result.add(inner) # if just 1 children just pass it as arg
   inner.copychildrento(result) # if several children copy them all, AST level.
 
-func newHtml*(head, body: HtmlNode): HtmlNode =
+proc newHtml*(head, body: HtmlNode): HtmlNode =
   ## Create a new ``<html>`` tag Node, containing a ``<head>`` and ``<body>``.
   HtmlNode(kind: nkHtml, head: head, body: body) # Head & Body have childrens.
 
@@ -98,18 +103,15 @@ macro html*(name: untyped, inner: untyped): typed =
   ## Macro to create a new call to ``newHtml()``, passing Head and Body as arg.
   var rs = newCall("newHtml", inner[0], inner[1])  # Call newHtml(head, body)
   result = quote do: # inner is the whole content of the HTML DSL (head + body)
-    func `name`(): HtmlNode {.inline.} = `rs` # Do name() = newHtml(head, body)
+    proc `name`(): HtmlNode {.inline.} = `rs` # Do name() = newHtml(head, body)
 
 template indent_if_needed(thingy, indentation_level: untyped): untyped =
   ## Render Pretty-Printed with indentation when build for Release,else Minified
   when defined(release): thingy           # Release, Minified for Performance.
   else: indent(thingy, indentation_level) # Development, use the Indentations.
 
-var conta: int
 proc render*(this: HtmlNode): string =
   ## Render HtmlNode with indentation return string.
-  if this.kind in [nkMeta, nkLink]:
-    debugEcho "ERROR"
   var indentation_level: byte   # indent level, 0 ~ 255.
   case this.kind
   of nkHtml:                    # <html>
@@ -124,10 +126,10 @@ proc render*(this: HtmlNode): string =
     inc indentation_level
     if this.meta.len > 0:
       for meta_tag in this.meta:  # <meta ... >
-        result &= indent_if_needed(open_tag(meta_tag), indentation_level)
+        result &= indent_if_needed(render(meta_tag), indentation_level)
     if this.link.len > 0:
       for link_tag in this.link:  # <link ... >
-        result &= indent_if_needed(open_tag(link_tag), indentation_level)
+        result &= indent_if_needed(render(link_tag), indentation_level)
     result &= indent_if_needed(open_tag(this.title), indentation_level)
     dec indentation_level
     result &= close_tag this
@@ -142,18 +144,7 @@ proc render*(this: HtmlNode): string =
           result &= indent_if_needed(open_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
-
-  of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
-     nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
-     nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
-     nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
-     nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI, nkImg,
-     nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
-     nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
-     nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
-     nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
-     nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
-     nkTrack, nkTt, nkU, nkUl:  # All other tags
+  else:
     result &= open_tag this
     inc indentation_level
     if this.children.len > 0:
@@ -164,15 +155,37 @@ proc render*(this: HtmlNode): string =
           result &= indent_if_needed(open_tag(tag), indentation_level)
     dec indentation_level
     result &= close_tag this
-  else:
-    debugEcho "render() else: " & toUpperAscii($this.kind)
+
+  # of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
+  #    nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
+  #    nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
+  #    nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
+  #    nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI, nkImg,
+  #    nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
+  #    nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
+  #    nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
+  #    nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
+  #    nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
+  #    nkTrack, nkTt, nkU, nkUl:  # All other tags
+  #   result &= open_tag this
+  #   inc indentation_level
+  #   if this.children.len > 0:
+  #     for tag in this.children:
+  #       if tag.kind in can_have_children:
+  #         result &= indent_if_needed(render(tag), indentation_level)
+  #       else:
+  #         result &= indent_if_needed(open_tag(tag), indentation_level)
+  #   dec indentation_level
+  #   result &= close_tag this
+  # else:
+  #   debugEcho "render() else: " & toUpperAscii($this.kind)
 
 
 when isMainModule:
   html page:
     head:
       title "Title"
-      meta "foo", "bar"
+      meta("foo", "bar")
       link "href"
     body:
       p("Hello")
