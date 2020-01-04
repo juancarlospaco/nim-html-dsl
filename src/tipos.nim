@@ -1,12 +1,11 @@
 import strutils
 
 const basic_head_tags =
-  when defined(release):
-    """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">"""
-  else:
-    """<meta charset="utf-8">
+  when defined(release): """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">"""
+  else: """
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    """  ## Basic meta tags that all frameworks recommend nowadays.
+  """  ## Basic meta tags that all frameworks recommend nowadays.
 
 type HtmlNodeKind* = enum  ## All HTML Tags, taken from Mozilla docs, +Comment.
   nkA, nkAbbr,  nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase,
