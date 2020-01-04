@@ -650,22 +650,13 @@ func open_tag(this: HtmlNode): string {.discardable.} =
       when defined(release): "<" & tagy & atributos & ">" & this.text
       else: "<" & tagy & atributos & ">" & this.text
 
-func close_tag(this: HtmlNode): string {.discardable.} =
+func close_tag(this: HtmlNode): string {.inline, discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
   case this.kind
-  of nkHtml:
-    result =
-      when defined(release): "</html>"
-      else: "</html>\n<!-- Nim " & NimVersion & " -->\n"
-  of nkComment:
-    result =
-      when defined(release): " -->"
-      else: "  -->\n\n"
-  of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr:
-    result = ""  # These tags dont need Closing Tag.
+  of nkHtml:    result = when defined(release): "</html>" else: "</html>\n<!-- Nim " & NimVersion & " -->\n"
+  of nkComment: result = when defined(release): " -->" else: "  -->\n\n"
+  of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr: result = ""  # These tags dont need Closing Tag.
   else:
     var tagy = $this.kind
     tagy = tagy[2 ..< len(tagy)].toLowerAscii
-    result =
-      when defined(release): "</" & tagy & ">"
-      else: "</" & tagy & ">\n"
+    result = when defined(release): "</" & tagy & ">" else: "</" & tagy & ">\n"
