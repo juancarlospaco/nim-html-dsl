@@ -7,7 +7,7 @@
 import macros except body
 include tipos
 
-const can_have_children = [
+const canHaveChildren = [
   nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
   nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
   nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
@@ -138,7 +138,7 @@ proc render*(this: HtmlNode): string =
     inc indentation_level
     if this.children.len > 0:
       for tag in this.children:
-        if tag.kind in can_have_children:
+        if tag.kind in canHaveChildren:
           result &= indent_if_needed(render(tag), indentation_level)
         else:
           result &= indent_if_needed(open_tag(tag), indentation_level)
@@ -149,7 +149,7 @@ proc render*(this: HtmlNode): string =
     inc indentation_level
     if this.children.len > 0:
       for tag in this.children:
-        if tag.kind in can_have_children:
+        if tag.kind in canHaveChildren:
           result &= indent_if_needed(render(tag), indentation_level)
         else:
           result &= indent_if_needed(open_tag(tag), indentation_level)
@@ -171,7 +171,7 @@ proc render*(this: HtmlNode): string =
   #   inc indentation_level
   #   if this.children.len > 0:
   #     for tag in this.children:
-  #       if tag.kind in can_have_children:
+  #       if tag.kind in canHaveChildren:
   #         result &= indent_if_needed(render(tag), indentation_level)
   #       else:
   #         result &= indent_if_needed(open_tag(tag), indentation_level)
