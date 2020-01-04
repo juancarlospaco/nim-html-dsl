@@ -1,6 +1,6 @@
 import strutils
 
-const basic_head_tags =
+const basicHeadTags =
   when defined(release): """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">"""
   else: """
     <meta charset="utf-8">
@@ -536,8 +536,8 @@ func open_tag(this: HtmlNode): string {.discardable.} =
       else: "<!DOCTYPE html>\n  <html class='has-navbar-fixed-top'>\n"
   of nkHead:
     result =
-      when defined(release): "<head>" & basic_head_tags
-      else: "<head>\n  " & basic_head_tags
+      when defined(release): "<head>" & basicHeadTags
+      else: "<head>\n  " & basicHeadTags
   of nkTitle:
     result =
       when defined(release): "<title>" & this.text & "</title>"
