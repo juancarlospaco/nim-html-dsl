@@ -515,7 +515,7 @@ func attributter(tagy: HtmlNode): string =
       atributes.add """contenteditable="true" """
   result = atributes.join.strip(leading=false)
 
-func open_tag(this: HtmlNode): string {.discardable.} =
+func openTag(this: HtmlNode): string {.discardable.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
   var atributos: string
   if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]:
@@ -634,14 +634,14 @@ func open_tag(this: HtmlNode): string {.discardable.} =
       when defined(release): "<!-- " & this.text.strip & " -->"
       else: "\n\n<!--  " & this.text & "  -->\n\n"
   else:
-    debugEcho "open_tag() else: " & $this.kind
+    debugEcho "openTag() else: " & $this.kind
     var tagy = $this.kind
     tagy = tagy[2 ..< len(tagy)].toLowerAscii # remove "nk" from string
     result =
       when defined(release): "<" & tagy & atributos & ">" & this.text
       else: "<" & tagy & atributos & ">" & this.text
 
-func close_tag(this: HtmlNode): string {.inline, discardable.} =
+func closeTag(this: HtmlNode): string {.inline, discardable.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
   case this.kind
   of nkHtml:    result = when defined(release): "</html>" else: "</html>\n<!-- Nim " & NimVersion & " -->\n"
