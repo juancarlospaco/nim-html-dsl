@@ -30,8 +30,8 @@ var conta: int
 
 
 
-func p*(x: varargs[string, `$`]): Htmlnode =
-  result = Htmlnode(kind: nkP, text: (@x).join(" "))
+func p*(x: varargs[string, `$`]): HtmlNode =
+  result = HtmlNode(kind: nkP, text: (@x).join(" "))
 
 
 func newDiv*(children: varargs[HtmlNode]): HtmlNode =
@@ -42,7 +42,7 @@ macro dv*(inner: untyped): HtmlNode =
   result = newCall("newDiv")
   if inner.len == 1:
     result.add(inner)
-  inner.copychildrento(result)
+  inner.copyChildrenTo(result)
 
 func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
   result = HtmlNode(kind: nkA, href: href, text: val)
@@ -78,7 +78,7 @@ macro head*(inner: untyped): HtmlNode =
   assert inner.len >= 1, "Head Error: Wrong number of inner tags:" & $inner.len
   result = newCall("newHead")
   if inner.len == 1: result.add(inner)
-  inner.copychildrento(result)
+  inner.copyChildrenTo(result)
 
 func title*(titulo: string): HtmlNode =
   ## Create a new ``<title>`` tag Node with text string, title is Capitalized.
@@ -93,7 +93,7 @@ macro body*(inner: untyped): HtmlNode =
   assert inner.len >= 1, "Body Error: Wrong number of inner tags:" & $inner.len
   result = newCall("newBody") # Result is a call to newBody()
   if inner.len == 1: result.add(inner) # if just 1 children just pass it as arg
-  inner.copychildrento(result) # if several children copy them all, AST level.
+  inner.copyChildrenTo(result) # if several children copy them all, AST level.
 
 proc newHtml*(head, body: HtmlNode): HtmlNode =
   ## Create a new ``<html>`` tag Node, containing a ``<head>`` and ``<body>``.
@@ -105,55 +105,55 @@ macro html*(name: untyped, inner: untyped) =
   result = quote do: # inner is the whole content of the HTML DSL (head + body)
     proc `name`(): HtmlNode {.inline.} = `rs` # Do name() = newHtml(head, body)
 
-template indent_if_needed(thingy, indentation_level: untyped): untyped =
+template indent_if_needed(thingy, indentationLevel: untyped): untyped =
   ## Render Pretty-Printed with indentation when build for Release,else Minified
   when defined(release): thingy           # Release, Minified for Performance.
-  else: indent(thingy, indentation_level) # Development, use the Indentations.
+  else: indent(thingy, indentationLevel) # Development, use the Indentations.
 
 proc render*(this: HtmlNode): string =
   ## Render HtmlNode with indentation return string.
-  var indentation_level: byte   # indent level, 0 ~ 255.
+  var indentationLevel: byte   # indent level, 0 ~ 255.
   case this.kind
   of nkHtml:                    # <html>
     result &= open_tag this
-    inc indentation_level
-    result &= indent_if_needed(render(this.head), indentation_level)
-    result &= indent_if_needed(render(this.body), indentation_level)
-    dec indentation_level
+    inc indentationLevel
+    result &= indent_if_needed(render(this.head), indentationLevel)
+    result &= indent_if_needed(render(this.body), indentationLevel)
+    dec indentationLevel
     result &= close_tag this
   of nkHead:                    # <head>
     result &= open_tag this
-    inc indentation_level
+    inc indentationLevel
     if this.meta.len > 0:
       for meta_tag in this.meta:  # <meta ... >
-        result &= indent_if_needed(render(meta_tag), indentation_level)
+        result &= indent_if_needed(render(meta_tag), indentationLevel)
     if this.link.len > 0:
       for link_tag in this.link:  # <link ... >
-        result &= indent_if_needed(render(link_tag), indentation_level)
-    result &= indent_if_needed(open_tag(this.title), indentation_level)
-    dec indentation_level
+        result &= indent_if_needed(render(link_tag), indentationLevel)
+    result &= indent_if_needed(open_tag(this.title), indentationLevel)
+    dec indentationLevel
     result &= close_tag this
   of nkBody:                    # <body>
     result &= open_tag this
-    inc indentation_level
+    inc indentationLevel
     if this.children.len > 0:
       for tag in this.children:
         if tag.kind in canHaveChildren:
-          result &= indent_if_needed(render(tag), indentation_level)
+          result &= indent_if_needed(render(tag), indentationLevel)
         else:
-          result &= indent_if_needed(open_tag(tag), indentation_level)
-    dec indentation_level
+          result &= indent_if_needed(open_tag(tag), indentationLevel)
+    dec indentationLevel
     result &= close_tag this
   else:
     result &= open_tag this
-    inc indentation_level
+    inc indentationLevel
     if this.children.len > 0:
       for tag in this.children:
         if tag.kind in canHaveChildren:
-          result &= indent_if_needed(render(tag), indentation_level)
+          result &= indent_if_needed(render(tag), indentationLevel)
         else:
-          result &= indent_if_needed(open_tag(tag), indentation_level)
-    dec indentation_level
+          result &= indent_if_needed(open_tag(tag), indentationLevel)
+    dec indentationLevel
     result &= close_tag this
 
   # of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
@@ -168,14 +168,14 @@ proc render*(this: HtmlNode): string =
   #    nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
   #    nkTrack, nkTt, nkU, nkUl:  # All other tags
   #   result &= open_tag this
-  #   inc indentation_level
+  #   inc indentationLevel
   #   if this.children.len > 0:
   #     for tag in this.children:
   #       if tag.kind in canHaveChildren:
-  #         result &= indent_if_needed(render(tag), indentation_level)
+  #         result &= indent_if_needed(render(tag), indentationLevel)
   #       else:
-  #         result &= indent_if_needed(open_tag(tag), indentation_level)
-  #   dec indentation_level
+  #         result &= indent_if_needed(open_tag(tag), indentationLevel)
+  #   dec indentationLevel
   #   result &= close_tag this
   # else:
   #   debugEcho "render() else: " & toUpperAscii($this.kind)
