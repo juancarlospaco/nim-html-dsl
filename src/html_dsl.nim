@@ -99,7 +99,7 @@ proc newHtml*(head, body: HtmlNode): HtmlNode =
   ## Create a new ``<html>`` tag Node, containing a ``<head>`` and ``<body>``.
   HtmlNode(kind: nkHtml, head: head, body: body) # Head & Body have childrens.
 
-macro html*(name: untyped, inner: untyped): typed =
+macro html*(name: untyped, inner: untyped) =
   ## Macro to create a new call to ``newHtml()``, passing Head and Body as arg.
   var rs = newCall("newHtml", inner[0], inner[1])  # Call newHtml(head, body)
   result = quote do: # inner is the whole content of the HTML DSL (head + body)
