@@ -192,20 +192,11 @@ type HtmlNode* = ref object  ## HTML Tag Object type, all possible attributes.
   else:
     children: seq[HtmlNode]
 
-# func toJson*(this: HtmlNode): string =
-#   result = "[\n    {\n"
-#   result &= "    " & $this.kind  # FIXME: Make it work or remove it (?).
-#   if this.children.len > 0:
-#     result &= ":\n        {\n"
-#     for tag in this.children:
-#       result &= "\n" & $tag
-
 func `$`*(this: HtmlNode): string =
   ## Stringify an ``HtmlNode``.
   result = $this.kind & ": "
   if this.children.len > 0:
-    for tag in this.children:
-      result &= "\n" & $tag
+    for tag in this.children: result &= "\n" & $tag
 
 func attributter(tagy: HtmlNode): string =
   ## Render to string all attributtes for all HTML tags. Uses Branch Prediction.
