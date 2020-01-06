@@ -80,13 +80,11 @@ const
 var conta: int
 
 func `$`*(this: HtmlNode): string =
-  ## Stringify an ``HtmlNode``.
   result = $this.kind & ": "
   if this.children.len > 0:
     for tag in this.children: result &= "\n" & $tag
 
 func attributter(t: HtmlNode): string =
-  ## Render to string all attributtes for all HTML tags. Uses Branch Prediction.
   if t.hidden.len > 0:              result.add "hidden "
   if t.spellcheck.len > 0:          result.add "spellcheck "
   if unlikely(t.disabled.len > 0):  result.add "disabled "
@@ -244,8 +242,7 @@ func attributter(t: HtmlNode): string =
   if unlikely(t.contenteditable):   result.add """contenteditable="true" """
 
 func openTag(this: HtmlNode): string =
-  ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
-  const n = when defined(release): ">" else: ">\n"
+  const n = when defined(release): ">" else: ">\n" # Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
   let atributos = if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]: attributter(this) else: ""
   result = case this.kind
     of nkHtml:     static("<!DOCTYPE html" & n & "<html class='has-navbar-fixed-top'" & n)
@@ -282,8 +279,7 @@ func openTag(this: HtmlNode): string =
     else: "<" & $this.kind & atributos & n & this.text
 
 func closeTag(this: HtmlNode): string {.inline.} =
-  ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
-  result = case this.kind
+  result = case this.kind ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
     of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr: ""  # These tags dont need Closing Tag.
     of nkComment: static(when defined(release): "" else: "  -->\n\n")
     of nkHtml: static(when defined(release): "</html>" else: "</html>\n<!-- Powered by Nim " & NimVersion & " https://nim-lang.org  -->\n")
