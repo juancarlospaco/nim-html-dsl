@@ -41,170 +41,28 @@ type HtmlNodeKind = enum  ## All HTML Tags, taken from Mozilla docs, +Comment.
 
 type HtmlNode = ref object  ## HTML Tag Object type, all possible attributes.
   contenteditable: bool
-  width: int
-  height: int
-  id: string
-  class: string
-  name: string
-  accesskey: string
-  src: string
-  tabindex: string
-  translate: string
-  hidden: string
-  httpequiv: string
-  lang: string
-  role: string
-  spellcheck: string
-  onabort: string
-  onblur: string
-  oncancel: string
-  oncanplay: string
-  oncanplaythrough: string
-  onchange: string
-  onclick: string
-  oncuechange: string
-  ondblclick: string
-  ondurationchange: string
-  onemptied: string
-  onended: string
-  onerror: string
-  onfocus: string
-  oninput: string
-  oninvalid: string
-  onkeydown: string
-  onkeypress: string
-  onkeyup: string
-  onload: string
-  onloadeddata: string
-  onloadedmetadata: string
-  onloadstart: string
-  onmousedown: string
-  onmouseenter: string
-  onmouseleave: string
-  onmousemove: string
-  onmouseout: string
-  onmouseover: string
-  onmouseup: string
-  onmousewheel: string
-  onpause: string
-  onplay: string
-  onplaying: string
-  onprogress: string
-  onratechange: string
-  onreset: string
-  onresize: string
-  onscroll: string
-  onseeked: string
-  onseeking: string
-  onselect: string
-  onshow: string
-  onstalled: string
-  onsubmit: string
-  onsuspend: string
-  ontimeupdate: string
-  ontoggle: string
-  onvolumechange: string
-  onwaiting: string
-  disabled: string
-  crossorigin: string
-  hreflang: string
-  form: string
-  maxlength: string
-  minlength: string
-  placeholder: string
-  readonly: string
-  required: string
-  coords: string
-  download: string
-  href: string
-  rel: string
-  shape: string
-  target: string
-  preload: string
-  autoplay: string
-  mediagroup: string
-  loop: string
-  muted: string
-  controls: string
-  poster: string
-  onafterprint: string
-  onbeforeprint: string
-  onbeforeunload: string
-  onhashchange: string
-  onmessage: string
-  onoffline: string
-  ononline: string
-  onpagehide: string
-  onpageshow: string
-  onpopstate: string
-  onstorage: string
-  onunload: string
-  open: string
-  action: string
-  enctype: string
-  novalidate: string
-  srcdoc: string
-  sandbox: string
-  usemap: string
-  ismap: string
-  accept: string
-  alt: string
-  autocomplete: string
-  autofocus: string
-  checked: string
-  dirname: string
-  formaction: string
-  formenctype: string
-  formmethod: string
-  formnovalidate: string
-  formtarget: string
-  inputmode: string
-  list: string
-  max: string
-  min: string
-  multiple: string
-  pattern: string
-  size: string
-  step: string
-  `type`: string
-  value: string
-  `for`: string
-  `async`: string
-  `defer`: string
-  text: string
-  val : string
-  content: string
-  behavior: string
-  bgcolor: string
-  direction: string
-  hspace: string
-  scrollamount: string
-  scrolldelay: string
-  truespeed: string
-  vspace: string
-  onbounce: string
-  onfinish: string
-  onstart: string
-  optimum: string
-  selected: string
-  colspan: string
-  rowspan: string
-  headers: string
-  cols: string
-  rows : string
-  wrap: string
-  integrity: string
-  media: string
-  referrerpolicy: string
-  sizes: string
+  width, height: Natural
+  id, class, name, accesskey, src, tabindex, translate, hidden, httpequiv, lang, role, spellcheck: string
+  onabort, onblur, oncancel, oncanplay, oncanplaythrough, onchange, onclick, oncuechange, ondblclick: string
+  ondurationchange, onemptied, onended, onerror, onfocus, oninput, oninvalid, onkeydown, onkeypress: string
+  onkeyup, onload, onloadeddata, onloadedmetadata, onloadstart, onmousedown, onmouseenter, onmouseleave: string
+  onmousemove, onmouseout, onmouseover, onmouseup, onmousewheel, onpause, onplay, onplaying, onprogress: string
+  onratechange, onreset, onresize, onscroll, onseeked, onseeking, onselect, onshow, onstalled, onsubmit: string
+  onsuspend, ontimeupdate, ontoggle, onvolumechange, onwaiting, disabled, crossorigin, hreflang, form: string
+  maxlength, minlength, placeholder, readonly, required, coords, download, href, rel, shape, target: string
+  preload, autoplay, mediagroup, loop, muted, controls, poster, onafterprint, onbeforeprint, onbeforeunload: string
+  onhashchange, onmessage, onoffline, ononline, onpagehide, onpageshow, onpopstate, onstorage, onunload: string
+  open, action, enctype, novalidate, srcdoc, sandbox, usemap, ismap, accept, alt, autocomplete, autofocus: string
+  checked, dirname, formaction, formenctype, formmethod, formnovalidate, formtarget, inputmode, list: string
+  max, min, multiple, pattern, size, step, value, text, val, content, behavior, bgcolor, direction, hspace: string
+  scrollamount, scrolldelay, truespeed, vspace, onbounce, onfinish, onstart, optimum, selected, colspan: string
+  rowspan, headers, cols, rows, wrap, integrity, media, referrerpolicy, sizes : string
+  `type`, `for`, `async`, `defer`: string
   case kind: HtmlNodeKind  # Some tags have unique attributes.
-  of nkHtml:
-    head: HtmlNode
-    body: HtmlNode
+  of nkHtml: head, body: HtmlNode
   of nkHead:
     title: HtmlNode
-    meta: seq[HtmlNode]
-    link: seq[HtmlNode]
+    meta, link: seq[HtmlNode]
   else: children: seq[HtmlNode]
 
 func `$`*(this: HtmlNode): string =
