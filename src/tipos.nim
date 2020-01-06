@@ -234,9 +234,7 @@ func attributter(t: HtmlNode): string =
 
 func openTag(this: HtmlNode): string {.discardable.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
-  var atributos: string
-  if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]:
-    atributos = attributter(this)
+  let atributos = if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]: attributter(this) else: ""
   case this.kind
   of nkHtml:
     result =
