@@ -67,18 +67,18 @@ type HtmlNode = ref object  ## HTML Tag Object type, all possible attributes.
 
 const
   basicHeadTags = """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">""" # Basic meta tags that all frameworks recommend nowadays.
-  canHaveChildren = [
-    nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
-    nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
-    nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
-    nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
-    nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI, nkImg,
-    nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
-    nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
-    nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
-    nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
-    nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
-    nkTrack, nkTt, nkU, nkUl]  ## All Tags that can possibly have childrens.
+  canHaveChildren = [nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB,
+    nkBase, nkBdi, nkBdo, nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption,
+    nkCenter, nkCol, nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails,
+    nkDfn, nkDialog, nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure,
+    nkFigcaption, nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6,
+    nkHeader, nkI, nkImg, nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi,
+    nkMain, nkMap, nkMark, nkMarquee, nkNav, nkObject, nkOl, nkOptgroup,
+    nkOption, nkOutput, nkParam, nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt,
+    nkRtc, nkRuby, nkS, nkSamp, nkSection, nkSelect, nkSmall, nkSource, nkSpan,
+    nkStrong, nkSub, nkSummary, nkSup, nkTable, nkTbody, nkTd, nkTemplate,
+    nkTfoot, nkTh, nkThead, nkTr, nkTrack, nkTt, nkU, nkUl]  ## All Tags that can possibly have childrens.
+var conta: int
 
 func `$`*(this: HtmlNode): string =
   ## Stringify an ``HtmlNode``.
@@ -244,7 +244,7 @@ func attributter(t: HtmlNode): string =
   if t.sizes.len > 0:               result.add "sizes=\""            & t.sizes            & "\" "
   if unlikely(t.contenteditable):   result.add """contenteditable="true" """
 
-func openTag(this: HtmlNode): string {.used.} =
+func openTag(this: HtmlNode): string =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
   const n = when defined(release): ">" else: ">\n"
   let atributos = if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]: attributter(this) else: ""
@@ -282,7 +282,7 @@ func openTag(this: HtmlNode): string {.used.} =
       when defined(release): "" else: "\n\n<!--  " & this.text & "  -->\n\n"
     else: "<" & $this.kind & atributos & n & this.text
 
-func closeTag(this: HtmlNode): string {.inline, used.} =
+func closeTag(this: HtmlNode): string {.inline.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
   result = case this.kind
     of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr: ""  # These tags dont need Closing Tag.
@@ -295,7 +295,6 @@ func closeTag(this: HtmlNode): string {.inline, used.} =
 
 
 
-var conta: int
 
 
 
