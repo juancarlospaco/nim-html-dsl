@@ -269,8 +269,7 @@ func openTag(this: HtmlNode): string =
     of nkNav:      "<nav class='navbar is-fixed-top is-light' role='navigation'" & atributos & n
     of nkHr:       static("<hr" & n)
     of nkBr:       static("<br" & n)
-    of nkComment:
-      when defined(release): "" else: "\n\n<!--  " & this.text & "  -->\n\n"
+    of nkComment:  indent(when defined(release): "" else: "\n\n<!--  " & this.text & "  -->\n\n", 2)
     else: "<" & $this.kind & atributos & n & this.text
 
 func closeTag(this: HtmlNode): string {.inline.} =
