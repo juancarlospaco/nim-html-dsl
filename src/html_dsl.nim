@@ -7,63 +7,62 @@
 import macros except body
 import strutils
 
-type HtmlNodeKind = enum  ## All HTML Tags, taken from Mozilla docs, +Comment.
-  nkA = "a", nkAbbr = "abbr",  nkAddress = "address", nkArea = "area",
-  nkArticle = "article", nkAside = "aside", nkAudio = "audio", nkB = "b",
-  nkBase = "base", nkBdi = "bdi", nkBdo = "bdo", nkBig = "big",
-  nkBlockquote = "blockquote", nkBody = "body", nkBr = "br",
-  nkButton = "button", nkCanvas = "canvas", nkCaption = "caption",
-  nkCenter = "center", nkCite = "cite", nkCode = "code", nkCol = "col",
-  nkColgroup = "colgroup", nkData = "data", nkDatalist = "datalist",
-  nkDd = "dd", nkDel = "del", nkDetails = "details", nkDfn = "dfn",
-  nkDialog = "dialog", nkDiv = "div", nkDl = "dl", nkDt = "dt", nkEm = "em",
-  nkEmbed = "embed", nkFieldset = "fieldset", nkFigure = "figure",
-  nkFigcaption = "figcaption", nkFooter = "footer", nkForm = "form",
-  nkH1 = "h1", nkH2 = "h2", nkH3 = "h3", nkH4 = "h4", nkH5 = "h5", nkH6 = "h6",
-  nkHead = "head", nkHeader = "header", nkHtml = "html", nkHr = "hr",
-  nkI = "i", nkIframe = "iframe", nkImg = "img", nkInput = "input",
-  nkIns = "ins", nkKbd = "kbd", nkKeygen = "leygen", nkLabel = "label",
-  nkLegend = "legend", nkLi = "li", nkLink = "link", nkMain = "main",
-  nkMap = "map", nkMark = "mark", nkMarquee = "marquee", nkMeta = "meta",
-  nkMeter = "meter", nkNav = "nav", nkNoscript = "noscript",
-  nkObject = "object", nkOl = "ol", nkOptgroup = "optgroup",
-  nkOption = "option", nkOutput = "output", nkP = "p", nkParam = "param",
-  nkPicture = "picture", nkPre = "pre", nkProgress = "progress", nkQ = "q",
-  nkRb = "rb", nkRp = "rp", nkRt = "rt", nkRtc = "rtc", nkRuby = "ruby",
-  nkS = "s", nkSamp = "samp", nkScript = "script", nkSection = "section",
-  nkSelect = "select", nkSlot = "slot", nkSmall = "small", nkSource = "source",
-  nkSpan = "span", nkStrong = "strong", nkStyle = "style", nkSub = "sub",
-  nkSummary = "summary", nkSup = "sup", nkTable = "table", nkTbody = "tbody",
-  nkTd = "td", nkTemplate = "template", nkTextarea = "textarea",
-  nkTfoot = "tfoot", nkTh = "th", nkThead = "thead", nkTime = "time",
-  nkTitle = "title", nkTr = "tr", nkTrack = "track", nkTt = "tt", nkU = "u",
-  nkUl = "ul", nkVar = "var", nkVideo = "video", nkWbr = "wbr", nkComment
-
-type HtmlNode = ref object  ## HTML Tag Object type, all possible attributes.
-  contenteditable: bool
-  width, height: Natural
-  id, class, name, accesskey, src, tabindex, translate, hidden, httpequiv, lang, role, spellcheck: string
-  onabort, onblur, oncancel, oncanplay, oncanplaythrough, onchange, onclick, oncuechange, ondblclick: string
-  ondurationchange, onemptied, onended, onerror, onfocus, oninput, oninvalid, onkeydown, onkeypress: string
-  onkeyup, onload, onloadeddata, onloadedmetadata, onloadstart, onmousedown, onmouseenter, onmouseleave: string
-  onmousemove, onmouseout, onmouseover, onmouseup, onmousewheel, onpause, onplay, onplaying, onprogress: string
-  onratechange, onreset, onresize, onscroll, onseeked, onseeking, onselect, onshow, onstalled, onsubmit: string
-  onsuspend, ontimeupdate, ontoggle, onvolumechange, onwaiting, disabled, crossorigin, hreflang, form: string
-  maxlength, minlength, placeholder, readonly, required, coords, download, href, rel, shape, target: string
-  preload, autoplay, mediagroup, loop, muted, controls, poster, onafterprint, onbeforeprint, onbeforeunload: string
-  onhashchange, onmessage, onoffline, ononline, onpagehide, onpageshow, onpopstate, onstorage, onunload: string
-  open, action, enctype, novalidate, srcdoc, sandbox, usemap, ismap, accept, alt, autocomplete, autofocus: string
-  checked, dirname, formaction, formenctype, formmethod, formnovalidate, formtarget, inputmode, list: string
-  max, min, multiple, pattern, size, step, value, text, val, content, behavior, bgcolor, direction, hspace: string
-  scrollamount, scrolldelay, truespeed, vspace, onbounce, onfinish, onstart, optimum, selected, colspan: string
-  rowspan, headers, cols, rows, wrap, integrity, media, referrerpolicy, sizes : string
-  `type`, `for`, `async`, `defer`: string
-  case kind: HtmlNodeKind  # Some tags have unique attributes.
-  of nkHtml: head, body: HtmlNode
-  of nkHead:
-    title: HtmlNode
-    meta, link: seq[HtmlNode]
-  else: children: seq[HtmlNode]
+type
+  HtmlNodeKind = enum  ## All HTML Tags, taken from Mozilla docs, +Comment.
+    nkA = "a", nkAbbr = "abbr",  nkAddress = "address", nkArea = "area",
+    nkArticle = "article", nkAside = "aside", nkAudio = "audio", nkB = "b",
+    nkBase = "base", nkBdi = "bdi", nkBdo = "bdo", nkBig = "big",
+    nkBlockquote = "blockquote", nkBody = "body", nkBr = "br",
+    nkButton = "button", nkCanvas = "canvas", nkCaption = "caption",
+    nkCenter = "center", nkCite = "cite", nkCode = "code", nkCol = "col",
+    nkColgroup = "colgroup", nkData = "data", nkDatalist = "datalist",
+    nkDd = "dd", nkDel = "del", nkDetails = "details", nkDfn = "dfn",
+    nkDialog = "dialog", nkDiv = "div", nkDl = "dl", nkDt = "dt", nkEm = "em",
+    nkEmbed = "embed", nkFieldset = "fieldset", nkFigure = "figure",
+    nkFigcaption = "figcaption", nkFooter = "footer", nkForm = "form",
+    nkH1 = "h1", nkH2 = "h2", nkH3 = "h3", nkH4 = "h4", nkH5 = "h5", nkH6 = "h6",
+    nkHead = "head", nkHeader = "header", nkHtml = "html", nkHr = "hr",
+    nkI = "i", nkIframe = "iframe", nkImg = "img", nkInput = "input",
+    nkIns = "ins", nkKbd = "kbd", nkKeygen = "leygen", nkLabel = "label",
+    nkLegend = "legend", nkLi = "li", nkLink = "link", nkMain = "main",
+    nkMap = "map", nkMark = "mark", nkMarquee = "marquee", nkMeta = "meta",
+    nkMeter = "meter", nkNav = "nav", nkNoscript = "noscript",
+    nkObject = "object", nkOl = "ol", nkOptgroup = "optgroup",
+    nkOption = "option", nkOutput = "output", nkP = "p", nkParam = "param",
+    nkPicture = "picture", nkPre = "pre", nkProgress = "progress", nkQ = "q",
+    nkRb = "rb", nkRp = "rp", nkRt = "rt", nkRtc = "rtc", nkRuby = "ruby",
+    nkS = "s", nkSamp = "samp", nkScript = "script", nkSection = "section",
+    nkSelect = "select", nkSlot = "slot", nkSmall = "small", nkSource = "source",
+    nkSpan = "span", nkStrong = "strong", nkStyle = "style", nkSub = "sub",
+    nkSummary = "summary", nkSup = "sup", nkTable = "table", nkTbody = "tbody",
+    nkTd = "td", nkTemplate = "template", nkTextarea = "textarea",
+    nkTfoot = "tfoot", nkTh = "th", nkThead = "thead", nkTime = "time",
+    nkTitle = "title", nkTr = "tr", nkTrack = "track", nkTt = "tt", nkU = "u",
+    nkUl = "ul", nkVar = "var", nkVideo = "video", nkWbr = "wbr", nkComment
+  HtmlNode = ref object  ## HTML Tag Object type, all possible attributes.
+    contenteditable: bool
+    width, height: Natural
+    id, class, name, accesskey, src, tabindex, translate, hidden, httpequiv, lang, role, spellcheck: string
+    onabort, onblur, oncancel, oncanplay, oncanplaythrough, onchange, onclick, oncuechange, ondblclick: string
+    ondurationchange, onemptied, onended, onerror, onfocus, oninput, oninvalid, onkeydown, onkeypress: string
+    onkeyup, onload, onloadeddata, onloadedmetadata, onloadstart, onmousedown, onmouseenter, onmouseleave: string
+    onmousemove, onmouseout, onmouseover, onmouseup, onmousewheel, onpause, onplay, onplaying, onprogress: string
+    onratechange, onreset, onresize, onscroll, onseeked, onseeking, onselect, onshow, onstalled, onsubmit: string
+    onsuspend, ontimeupdate, ontoggle, onvolumechange, onwaiting, disabled, crossorigin, hreflang, form: string
+    maxlength, minlength, placeholder, readonly, required, coords, download, href, rel, shape, target: string
+    preload, autoplay, mediagroup, loop, muted, controls, poster, onafterprint, onbeforeprint, onbeforeunload: string
+    onhashchange, onmessage, onoffline, ononline, onpagehide, onpageshow, onpopstate, onstorage, onunload: string
+    open, action, enctype, novalidate, srcdoc, sandbox, usemap, ismap, accept, alt, autocomplete, autofocus: string
+    checked, dirname, formaction, formenctype, formmethod, formnovalidate, formtarget, inputmode, list: string
+    max, min, multiple, pattern, size, step, value, text, val, content, behavior, bgcolor, direction, hspace: string
+    scrollamount, scrolldelay, truespeed, vspace, onbounce, onfinish, onstart, optimum, selected, colspan: string
+    rowspan, headers, cols, rows, wrap, integrity, media, referrerpolicy, sizes, `type`, `for`, `async`, `defer`: string
+    case kind: HtmlNodeKind  # Some tags have unique attributes.
+    of nkHtml: head, body: HtmlNode
+    of nkHead:
+      title: HtmlNode
+      meta, link: seq[HtmlNode]
+    else: children: seq[HtmlNode]
 
 const
   basicHeadTags = """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">""" # Basic meta tags that all frameworks recommend nowadays.
@@ -286,10 +285,8 @@ func closeTag(this: HtmlNode): string {.inline.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
   result = case this.kind
     of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr: ""  # These tags dont need Closing Tag.
-    of nkHtml:
-      when defined(release): "</html>" else: static("</html>\n<!-- Powered by Nim " & NimVersion & " https://nim-lang.org  -->\n")
-    of nkComment:
-      when defined(release): "" else: "  -->\n\n"
+    of nkComment: static(when defined(release): "" else: "  -->\n\n")
+    of nkHtml: static(when defined(release): "</html>" else: "</html>\n<!-- Powered by Nim " & NimVersion & " https://nim-lang.org  -->\n")
     else:
       when defined(release): "</" & $this.kind & ">" else: "\n</" & $this.kind & ">\n"
 
