@@ -275,8 +275,7 @@ func openTag(this: HtmlNode): string =
 
 func closeTag(this: HtmlNode): string {.inline.} =
   result = case this.kind ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
-    of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr: ""  # These tags dont need Closing Tag.
-    of nkComment: static(when defined(release): "" else: "  -->\n\n")
+    of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr, nkComment: ""  # These tags dont need Closing Tag.
     of nkHtml: static(when defined(release): "</html>" else: "</html>\n<!-- Powered by Nim " & NimVersion & " https://nim-lang.org  -->\n")
     else:
       when defined(release): "</" & $this.kind & ">" else: "\n</" & $this.kind & ">\n"
