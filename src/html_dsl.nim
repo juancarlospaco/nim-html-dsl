@@ -1,9 +1,4 @@
-## HTML-DSL
-## ========
-##
-## - Nim HTML DSL, Domain Specific Language for HTML embedded on Nim lang code *(Not a template engine)*.
-##
-## .. image:: https://raw.githubusercontent.com/juancarlospaco/nim-html-dsl/master/temp.png
+## HTML-DSL: Nim HTML DSL, Domain Specific Language for HTML embedded on Nim lang code *(Not a template engine)*.
 import macros except body
 import strutils
 
@@ -85,7 +80,7 @@ func `$`*(this: HtmlNode): string =
     for tag in this.children: result &= "\n" & $tag
 
 func attributter(t: HtmlNode): string =
-  if t.hidden.len > 0:              result.add "hidden "
+  if t.hidden.len > 0:              result.add "hidden " # Just adds HTML attributes for tags.
   if t.spellcheck.len > 0:          result.add "spellcheck "
   if unlikely(t.disabled.len > 0):  result.add "disabled "
   if t.readonly.len > 0:            result.add "readonly "
