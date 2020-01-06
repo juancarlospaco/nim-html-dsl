@@ -80,6 +80,7 @@ func `$`*(this: HtmlNode): string =
     for tag in this.children: result &= "\n" & $tag
 
 func attributter(t: HtmlNode): string =
+  result = " "
   if t.hidden.len > 0:              result.add "hidden " # Just adds HTML attributes for tags.
   if t.spellcheck.len > 0:          result.add "spellcheck "
   if unlikely(t.disabled.len > 0):  result.add "disabled "
@@ -305,28 +306,25 @@ macro dv*(inner: untyped): HtmlNode =
     result.add(inner)
   inner.copyChildrenTo(result)
 
-func newa*(href, val: string, rel="", id="", class=""): HtmlNode =
-  result = HtmlNode(kind: nkA, href: href, text: val)
+
+
+
+
+func a*(href, text: string, id="", class="", rel=""): HtmlNode {.inline.} =
+  result = HtmlNode(kind: nkA, href: href, text: text)
   result.id = id
   result.class = class
   result.rel = rel
-
-
-
-
-
-
 
 func meta*(name, content: string, httpequiv=""): HtmlNode {.inline.} = HtmlNode(kind: nkMeta, name: name, content: content, httpequiv: httpequiv) ## Create a new ``<meta>`` tag Node with name,content,httpequiv. No children.
 func title*(titulo: string): HtmlNode {.inline.} = HtmlNode(kind: nkTitle, text: titulo.strip.capitalizeAscii) ## Create a new ``<title>`` tag Node with text string, title is Capitalized.
 func link*(href: string, hreflang="", crossorigin="", integrity="", media="", referrerpolicy="", sizes=""): HtmlNode {.inline.} =
   HtmlNode(kind: nkLink, href: href, crossorigin: crossorigin, integrity: integrity, media: media, referrerpolicy: referrerpolicy, sizes: sizes, hreflang: hreflang)
 
-func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link) ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
+func newHead(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link) ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
 
 macro head*(inner: untyped): HtmlNode =
-  ## Macro to call ``newHead()`` with the childrens.
-  assert inner.len >= 1, "Head Error: Wrong number of inner tags:" & $inner.len
+  assert inner.len >= 1, "Head Error: Wrong number of inner tags:" & $inner.len ## Macro to call ``newHead()`` with the childrens.
   result = newCall("newHead")
   if inner.len == 1: result.add inner
   inner.copyChildrenTo(result)
@@ -334,8 +332,7 @@ macro head*(inner: untyped): HtmlNode =
 func newBody(children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkBody, children: @children) ## Create a new ``<body>`` tag Node, containing all children tags.
 
 macro body*(inner: untyped): HtmlNode =
-  ## Macro to call ``newBody()`` with the childrens, if any.
-  assert inner.len >= 1, "Body Error: Wrong number of inner tags:" & $inner.len
+  assert inner.len >= 1, "Body Error: Wrong number of inner tags:" & $inner.len ## Macro to call ``newBody()`` with the childrens, if any.
   result = newCall("newBody") # Result is a call to newBody()
   if inner.len == 1: result.add inner # if just 1 children just pass it as arg
   inner.copyChildrenTo(result) # if several children copy them all, AST level.
@@ -353,42 +350,30 @@ template indentIfNeeded(thingy, indentationLevel: untyped): untyped =
 func render*(this: HtmlNode): string =
   ## Render HtmlNode with indentation return string.
   var indentationLevel: byte   # indent level, 0 ~ 255.
+  result &= openTag this
+  inc indentationLevel
   case this.kind
   of nkHtml:                    # <html>
-    result &= openTag this
-    inc indentationLevel
     result &= indentIfNeeded(render(this.head), indentationLevel)
     result &= indentIfNeeded(render(this.body), indentationLevel)
-    dec indentationLevel
-    result &= close_tag this
   of nkHead:                    # <head>
-    result &= openTag this
-    inc indentationLevel
     if this.meta.len > 0:
       for meta_tag in this.meta: result &= indentIfNeeded(render(meta_tag), indentationLevel)  # <meta ... >
     if this.link.len > 0:
       for link_tag in this.link: result &= indentIfNeeded(render(link_tag), indentationLevel) # <link ... >
     result &= indentIfNeeded(openTag(this.title), indentationLevel)
-    dec indentationLevel
-    result &= close_tag this
   of nkBody:                    # <body>
-    result &= openTag this
-    inc indentationLevel
     if this.children.len > 0:
       for tag in this.children:
         if tag.kind in canHaveChildren: result &= indentIfNeeded(render(tag), indentationLevel)
         else: result &= indentIfNeeded(openTag(tag), indentationLevel)
-    dec indentationLevel
-    result &= close_tag this
   else:
-    result &= openTag this
-    inc indentationLevel
     if this.children.len > 0:
       for tag in this.children:
         if tag.kind in canHaveChildren: result &= indentIfNeeded(render(tag), indentationLevel)
         else: result &= indentIfNeeded(openTag(tag), indentationLevel)
-    dec indentationLevel
-    result &= close_tag this
+  dec indentationLevel
+  result &= closeTag this
 
   # of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
   #    nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
@@ -410,7 +395,7 @@ func render*(this: HtmlNode): string =
   #       else:
   #         result &= indentIfNeeded(openTag(tag), indentationLevel)
   #   dec indentationLevel
-  #   result &= close_tag this
+  #   result &= closeTag this
   # else:
   #   debugEcho "render() else: " & toUpperAscii($this.kind)
 
@@ -424,6 +409,7 @@ when isMainModule:
     body:
       p("Hello")
       p("World")
+      a("WTF", "a")
       dv:
         p("Example")
 
