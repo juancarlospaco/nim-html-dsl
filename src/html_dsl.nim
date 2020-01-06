@@ -22,18 +22,17 @@ type
     nkLegend = "legend", nkLi = "li", nkLink = "link", nkMain = "main",
     nkMap = "map", nkMark = "mark", nkMarquee = "marquee", nkMeta = "meta",
     nkMeter = "meter", nkNav = "nav", nkNoscript = "noscript",
-    nkObject = "object", nkOl = "ol", nkOptgroup = "optgroup",
-    nkOption = "option", nkOutput = "output", nkP = "p", nkParam = "param",
-    nkPicture = "picture", nkPre = "pre", nkProgress = "progress", nkQ = "q",
-    nkRb = "rb", nkRp = "rp", nkRt = "rt", nkRtc = "rtc", nkRuby = "ruby",
-    nkS = "s", nkSamp = "samp", nkScript = "script", nkSection = "section",
-    nkSelect = "select", nkSlot = "slot", nkSmall = "small", nkSource = "source",
-    nkSpan = "span", nkStrong = "strong", nkStyle = "style", nkSub = "sub",
-    nkSummary = "summary", nkSup = "sup", nkTable = "table", nkTbody = "tbody",
-    nkTd = "td", nkTemplate = "template", nkTextarea = "textarea",
-    nkTfoot = "tfoot", nkTh = "th", nkThead = "thead", nkTime = "time",
-    nkTitle = "title", nkTr = "tr", nkTrack = "track", nkTt = "tt", nkU = "u",
-    nkUl = "ul", nkVar = "var", nkVideo = "video", nkWbr = "wbr", nkComment
+    nkOl = "ol", nkOptgroup = "optgroup", nkOption = "option",
+    nkOutput = "output", nkP = "p", nkParam = "param", nkPicture = "picture",
+    nkPre = "pre", nkProgress = "progress", nkQ = "q", nkRb = "rb", nkRp = "rp",
+    nkRt = "rt", nkRtc = "rtc", nkRuby = "ruby", nkS = "s", nkSamp = "samp",
+    nkScript = "script", nkSection = "section", nkSelect = "select",
+    nkSlot = "slot", nkSmall = "small", nkSource = "source", nkSpan = "span",
+    nkStrong = "strong", nkStyle = "style", nkSub = "sub", nkSummary = "summary",
+    nkSup = "sup", nkTable = "table", nkTbody = "tbody", nkTd = "td",
+    nkTextarea = "textarea", nkTfoot = "tfoot", nkTh = "th", nkThead = "thead",
+    nkTime = "time", nkTitle = "title", nkTr = "tr", nkTrack = "track",
+    nkTt = "tt", nkU = "u", nkUl = "ul", nkVideo = "video", nkWbr = "wbr", nkComment
   HtmlNode = ref object  ## HTML Tag Object type, all possible attributes.
     contenteditable: bool
     width, height: Natural
@@ -61,17 +60,6 @@ type
 
 const
   basicHeadTags = """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">""" # Basic meta tags that all frameworks recommend nowadays.
-  canHaveChildren = [nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB,
-    nkBase, nkBdi, nkBdo, nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption,
-    nkCenter, nkCol, nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails,
-    nkDfn, nkDialog, nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure,
-    nkFigcaption, nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6,
-    nkHeader, nkI, nkImg, nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi,
-    nkMain, nkMap, nkMark, nkMarquee, nkNav, nkObject, nkOl, nkOptgroup,
-    nkOption, nkOutput, nkParam, nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt,
-    nkRtc, nkRuby, nkS, nkSamp, nkSection, nkSelect, nkSmall, nkSource, nkSpan,
-    nkStrong, nkSub, nkSummary, nkSup, nkTable, nkTbody, nkTd, nkTemplate,
-    nkTfoot, nkTh, nkThead, nkTr, nkTrack, nkTt, nkU, nkUl]  ## All Tags that can possibly have childrens.
   procTemplate = """func $1*(text = "", val = "", contenteditable = false, width = 0, height = 0,
   id = "", class = "", name = "", accesskey = "", src = "", tabindex = "",
   translate = "", hidden = "", httpequiv = "", lang = "", role = "",
@@ -307,69 +295,61 @@ func setAttributes(t: HtmlNode): string =
 
 func openTag(this: HtmlNode): string =
   const n = when defined(release): ">" else: ">\n" # Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
-  let atributos = if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]: setAttributes(this) else: ""
   result = case this.kind
     of nkHtml:     static("<!DOCTYPE html" & n & "<html class='has-navbar-fixed-top'" & n)
     of nkHead:     static("<head" & n) & basicHeadTags
     of nkTitle:    "<title>" & this.text & static("</title" & n)
-    of nkMeta:     "<meta" & atributos & n
-    of nkLink:     "<link" & atributos & n
+    of nkMeta:     "<meta" & setAttributes(this) & n
+    of nkLink:     "<link" & setAttributes(this) & n
     of nkBody:     static("<body class='has-navbar-fixed-top'" & n)
-    of nkArticle:  "<article class='message'" & atributos & n
-    of nkButton:   "<button class='button is-light is-rounded btn tooltip'" & atributos & n & this.text
-    of nkDetails:  "<details class='message is-dark'" & atributos & n
-    of nkSummary:  "<summary class='message-header is-dark'" & atributos & n & this.text
-    of nkDialog:   "<dialog class='notification is-rounded modal'" & atributos & n
-    of nkFooter:   "<footer class='footer is-fullwidth'" & atributos & n
-    of nkH1:       "<h1 class='title'" & atributos & n
-    of nkImg:      "<img class='image img-responsive'" & atributos & n
-    of nkLabel:    "<label class='label form-label'" & atributos & n
-    of nkMeter:    "<meter class='progress is-small bar-item' role='progressbar'" & atributos & n
-    of nkProgress: "<progress class='progress is-small bar-item' role='progressbar'" & atributos & n
-    of nkSection:  "<section class='section'" & atributos & n
-    of nkSelect:   "<select class='select is-primary is-rounded is-small form-select'" & atributos & n
-    of nkTable:    "<table class='table is-bordered is-striped is-hoverable table-striped table-hover'" & atributos & n
-    of nkFigure:   "<figure class='figure figure-caption text-center'" & atributos & n & this.text
-    of nkPre:      "<pre class='code'" & atributos & n & this.text
-    of nkVideo:    "<video class='video-responsive'" & atributos & n
-    of nkCenter:   "<center class='is-centered'" & atributos & n & this.text
-    of nkInput:    "<input class='input is-primary form-input' dir='auto' " & atributos & n
-    of nkTextarea: "<textarea class='textarea is-primary form-input' dir='auto' " & atributos & n
-    of nkNav:      "<nav class='navbar is-fixed-top is-light' role='navigation'" & atributos & n
+    of nkArticle:  "<article class='message'" & setAttributes(this) & n
+    of nkButton:   "<button class='button is-light is-rounded btn tooltip'" & setAttributes(this) & n & this.text
+    of nkDetails:  "<details class='message is-dark'" & setAttributes(this) & n
+    of nkSummary:  "<summary class='message-header is-dark'" & setAttributes(this) & n & this.text
+    of nkDialog:   "<dialog class='notification is-rounded modal'" & setAttributes(this) & n
+    of nkFooter:   "<footer class='footer is-fullwidth'" & setAttributes(this) & n
+    of nkH1:       "<h1 class='title'" & setAttributes(this) & n
+    of nkImg:      "<img class='image img-responsive'" & setAttributes(this) & n
+    of nkLabel:    "<label class='label form-label'" & setAttributes(this) & n
+    of nkMeter:    "<meter class='progress is-small bar-item' role='progressbar'" & setAttributes(this) & n
+    of nkProgress: "<progress class='progress is-small bar-item' role='progressbar'" & setAttributes(this) & n
+    of nkSection:  "<section class='section'" & setAttributes(this) & n
+    of nkSelect:   "<select class='select is-primary is-rounded is-small form-select'" & setAttributes(this) & n
+    of nkTable:    "<table class='table is-bordered is-striped is-hoverable table-striped table-hover'" & setAttributes(this) & n
+    of nkFigure:   "<figure class='figure figure-caption text-center'" & setAttributes(this) & n & this.text
+    of nkPre:      "<pre class='code'" & setAttributes(this) & n & this.text
+    of nkVideo:    "<video class='video-responsive'" & setAttributes(this) & n
+    of nkCenter:   "<center class='is-centered'" & setAttributes(this) & n & this.text
+    of nkInput:    "<input class='input is-primary form-input' dir='auto' " & setAttributes(this) & n
+    of nkTextarea: "<textarea class='textarea is-primary form-input' dir='auto' " & setAttributes(this) & n
+    of nkNav:      "<nav class='navbar is-fixed-top is-light' role='navigation'" & setAttributes(this) & n
     of nkHr:       static("<hr" & n)
     of nkBr:       static("<br" & n)
     of nkComment:  indent(when defined(release): "" else: "\n\n<!--  " & this.text & "  -->\n\n", 2)
-    else: "<" & $this.kind & atributos & n & this.text
+    else: "<" & $this.kind & setAttributes(this) & n & this.text
 
 func closeTag(this: HtmlNode): string {.inline.} =
-  result = case this.kind ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
-    of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr, nkComment: ""  # These tags dont need Closing Tag.
-    of nkHtml: static(when defined(release): "</html>" else: "</html>\n<!-- Powered by Nim " & NimVersion & " https://nim-lang.org  -->\n")
-    else: (when defined(release): "</" & $this.kind & ">" else: "\n</" & $this.kind & ">\n")
+  if this.kind notin [nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr, nkComment]:
+    result = "</" & $this.kind & static(when defined(release): ">" else: ">\n")
 
 macro autogenAllTheProcs() =
   var allTheProcs: string
   for item in HtmlNodeKind:
-    if item in [nkComment, nkBody, nkHead, nkDiv, nkObject, nkTemplate, nkVar, nkHtml]: continue else: allTheProcs.add procTemplate.format($item) & "\n"
+    if item in [nkComment, nkBody, nkHead, nkDiv, nkHtml]: continue else: allTheProcs.add procTemplate.format($item) & "\n"
   parseStmt allTheProcs
 
 autogenAllTheProcs()
 
+func `<!--`*(text: string): HtmlNode {.inline.} = HtmlNode(kind: nkComment, text: text) # HTML Comment
+func newDiv*(children: varargs[HtmlNode]): HtmlNode = HtmlNode(kind: nkDiv, children: @children)
 
-
-
-
-func newDiv*(children: varargs[HtmlNode]): HtmlNode =
-  result = HtmlNode(kind: nkDiv, children: @children)
-
-macro dv*(inner: untyped): HtmlNode =
+macro divs*(inner: untyped): HtmlNode =
   assert inner.len >= 1, "Div Error: Wrong number of inner elements:" & $inner.len
   result = newCall("newDiv")
-  if inner.len == 1:
-    result.add(inner)
+  if inner.len == 1: result.add inner
   inner.copyChildrenTo(result)
 
-func newHead(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link) ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
+func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link) ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
 
 macro head*(inner: untyped): HtmlNode =
   assert inner.len >= 1, "Head Error: Wrong number of inner tags:" & $inner.len ## Macro to call ``newHead()`` with the childrens.
@@ -377,7 +357,7 @@ macro head*(inner: untyped): HtmlNode =
   if inner.len == 1: result.add inner
   inner.copyChildrenTo(result)
 
-func newBody(children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkBody, children: @children) ## Create a new ``<body>`` tag Node, containing all children tags.
+func newBody*(children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkBody, children: @children) ## Create a new ``<body>`` tag Node, containing all children tags.
 
 macro body*(inner: untyped): HtmlNode =
   assert inner.len >= 1, "Body Error: Wrong number of inner tags:" & $inner.len ## Macro to call ``newBody()`` with the childrens, if any.
@@ -385,7 +365,7 @@ macro body*(inner: untyped): HtmlNode =
   if inner.len == 1: result.add inner # if just 1 children just pass it as arg
   inner.copyChildrenTo(result) # if several children copy them all, AST level.
 
-func newHtml(head, body: HtmlNode): HtmlNode {.inline.} = HtmlNode(kind: nkHtml, head: head, body: body)
+func newHtml*(head, body: HtmlNode): HtmlNode {.inline.} = HtmlNode(kind: nkHtml, head: head, body: body)
 
 macro html*(name: untyped, inner: untyped) =
   let rs = newCall("newHtml", inner[0], inner[1])  # Call newHtml(head, body)
@@ -412,56 +392,9 @@ func render*(this: HtmlNode): string =
     result &= indentIfNeeded(openTag(this.title), indentationLevel)
   of nkBody:                    # <body>
     if this.children.len > 0:
-      for tag in this.children:
-        if tag.kind in canHaveChildren: result &= indentIfNeeded(render(tag), indentationLevel)
-        else: result &= indentIfNeeded(openTag(tag), indentationLevel)
+      for tag in this.children: result &= indentIfNeeded(render(tag), indentationLevel)
   else:
     if this.children.len > 0:
-      for tag in this.children:
-        if tag.kind in canHaveChildren: result &= indentIfNeeded(render(tag), indentationLevel)
-        else: result &= indentIfNeeded(openTag(tag), indentationLevel)
+      for tag in this.children: result &= indentIfNeeded(render(tag), indentationLevel)
   dec indentationLevel
   result &= closeTag this
-
-  # of nkAddress, nkArea, nkArticle, nkAside, nkAudio, nkB, nkBase, nkBdi, nkBdo,
-  #    nkBig, nkBlockquote, nkButton, nkCanvas, nkCaption, nkCenter, nkCol,
-  #    nkColgroup, nkData, nkDatalist, nkDd, nkDel, nkDetails, nkDfn, nkDialog,
-  #    nkDiv, nkDl, nkDt, nkEm, nkEmbed, nkFieldset, nkFigure, nkFigcaption,
-  #    nkFooter, nkForm, nkH1, nkH2, nkH3, nkH4, nkH5, nkH6, nkHeader, nkI, nkImg,
-  #    nkIns, nkKbd, nkKeygen, nkLabel, nkLegend, nkLi, nkMain, nkMap, nkMark,
-  #    nkMarquee, nkNav, nkObject, nkOl, nkOptgroup, nkOption, nkOutput, nkParam,
-  #    nkPicture, nkPre, nkQ, nkRb, nkRp, nkRt, nkRtc, nkRuby, nkS, nkSamp,
-  #    nkSection, nkSelect, nkSmall, nkSource, nkSpan, nkStrong, nkSub, nkSummary,
-  #    nkSup, nkTable, nkTbody, nkTd, nkTemplate, nkTfoot, nkTh, nkThead, nkTr,
-  #    nkTrack, nkTt, nkU, nkUl:  # All other tags
-  #   result &= openTag this
-  #   inc indentationLevel
-  #   if this.children.len > 0:
-  #     for tag in this.children:
-  #       if tag.kind in canHaveChildren:
-  #         result &= indentIfNeeded(render(tag), indentationLevel)
-  #       else:
-  #         result &= indentIfNeeded(openTag(tag), indentationLevel)
-  #   dec indentationLevel
-  #   result &= closeTag this
-  # else:
-  #   debugEcho "render() else: " & toUpperAscii($this.kind)
-
-
-when isMainModule:
-  html page:
-    head:
-      title "Title"
-      meta("foo", "bar")
-      link "href"
-    body:
-      p("Hello")
-      p("World")
-      a("WTF", "a")
-      dv:
-        p("Example")
-
-  echo render(page())
-
-
-# , hreflang="hreflang", crossorigin="crossorigin", integrity="integrity", media="media", referrerpolicy="referrerpolicy", sizes="sizes"
