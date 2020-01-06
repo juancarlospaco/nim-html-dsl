@@ -18,7 +18,7 @@ type
     nkH1 = "h1", nkH2 = "h2", nkH3 = "h3", nkH4 = "h4", nkH5 = "h5", nkH6 = "h6",
     nkHead = "head", nkHeader = "header", nkHtml = "html", nkHr = "hr",
     nkI = "i", nkIframe = "iframe", nkImg = "img", nkInput = "input",
-    nkIns = "ins", nkKbd = "kbd", nkKeygen = "leygen", nkLabel = "label",
+    nkIns = "ins", nkKbd = "kbd", nkKeygen = "keygen", nkLabel = "label",
     nkLegend = "legend", nkLi = "li", nkLink = "link", nkMain = "main",
     nkMap = "map", nkMark = "mark", nkMarquee = "marquee", nkMeta = "meta",
     nkMeter = "meter", nkNav = "nav", nkNoscript = "noscript",
@@ -72,7 +72,75 @@ const
     nkRtc, nkRuby, nkS, nkSamp, nkSection, nkSelect, nkSmall, nkSource, nkSpan,
     nkStrong, nkSub, nkSummary, nkSup, nkTable, nkTbody, nkTd, nkTemplate,
     nkTfoot, nkTh, nkThead, nkTr, nkTrack, nkTt, nkU, nkUl]  ## All Tags that can possibly have childrens.
-var conta: int
+  procTemplate = """func $1*(text = "", val = "", contenteditable = false, width = 0, height = 0,
+  id = "", class = "", name = "", accesskey = "", src = "", tabindex = "",
+  translate = "", hidden = "", httpequiv = "", lang = "", role = "",
+  spellcheck = "", onabort = "", onblur = "", oncancel = "", oncanplay = "",
+  oncanplaythrough = "", onchange = "", onclick = "", oncuechange = "",
+  ondblclick = "", ondurationchange = "", onemptied = "", onended = "",
+  onerror = "", onfocus = "", oninput = "", oninvalid = "", onkeydown = "",
+  onkeypress = "", onkeyup = "", onload = "", onloadeddata = "",
+  onloadedmetadata = "", onloadstart = "", onmousedown = "",
+  onmouseenter = "", onmouseleave = "", onmousemove = "", onmouseout = "",
+  onmouseover = "", onmouseup = "", onmousewheel = "", onpause = "",
+  onplay = "", onplaying = "", onprogress = "", onratechange = "",
+  onreset = "", onresize = "", onscroll = "", onseeked = "", onseeking = "",
+  onselect = "", onshow = "", onstalled = "", onsubmit = "", onsuspend = "",
+  ontimeupdate = "", ontoggle = "", onvolumechange = "", onwaiting = "",
+  disabled = "", crossorigin = "", hreflang = "", form = "", maxlength = "",
+  minlength = "", placeholder = "", readonly = "", required = "",
+  coords = "", download = "", href = "", rel = "", shape = "", target = "",
+  preload = "", autoplay = "", mediagroup = "", loop = "", muted = "",
+  controls = "", poster = "", onafterprint = "", onbeforeprint = "",
+  onbeforeunload = "", onhashchange = "", onmessage = "", onoffline = "",
+  ononline = "", onpagehide = "", onpageshow = "", onpopstate = "",
+  onstorage = "", onunload = "", open = "", action = "", enctype = "",
+  novalidate = "", srcdoc = "", sandbox = "", usemap = "", ismap = "",
+  accept = "", alt = "", autocomplete = "", autofocus = "", checked = "",
+  dirname = "", formaction = "", formenctype = "", formmethod = "",
+  formnovalidate = "", formtarget = "", inputmode = "", list = "", max = "",
+  min = "", multiple = "", pattern = "", size = "", step = "", value = "",
+  content = "", behavior = "", bgcolor = "", direction = "", hspace = "",
+  scrollamount = "", scrolldelay = "", truespeed = "", vspace = "", onbounce = "",
+  onfinish = "", onstart = "", optimum = "", selected = "", colspan = "",
+  rowspan = "", headers = "", cols = "", rows = "", wrap = "", integrity = "",
+  media = "", referrerpolicy = "", sizes = "", `type` = "", `for` = "", `async` = "",
+  `defer` = "", children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nk_$1,
+  text: text, val: val, contenteditable: contenteditable, width: width, height: height,
+  id: id, class: class, name: name, accesskey: accesskey, src: src, tabindex: tabindex,
+  translate: translate, hidden: hidden, httpequiv: httpequiv, lang: lang, role: role,
+  spellcheck: spellcheck, onabort: onabort, onblur: onblur, oncancel: oncancel, oncanplay: oncanplay,
+  oncanplaythrough: oncanplaythrough, onchange: onchange, onclick: onclick, oncuechange: oncuechange,
+  ondblclick: ondblclick, ondurationchange: ondurationchange, onemptied: onemptied, onended: onended,
+  onerror: onerror, onfocus: onfocus, oninput: oninput, oninvalid: oninvalid, onkeydown: onkeydown,
+  onkeypress: onkeypress, onkeyup: onkeyup, onload: onload, onloadeddata: onloadeddata,
+  onloadedmetadata: onloadedmetadata, onloadstart: onloadstart, onmousedown: onmousedown,
+  onmouseenter: onmouseenter, onmouseleave: onmouseleave, onmousemove: onmousemove, onmouseout: onmouseout,
+  onmouseover: onmouseover, onmouseup: onmouseup, onmousewheel: onmousewheel, onpause: onpause,
+  onplay: onplay, onplaying: onplaying, onprogress: onprogress, onratechange: onratechange,
+  onreset: onreset, onresize: onresize, onscroll: onscroll, onseeked: onseeked, onseeking: onseeking,
+  onselect: onselect, onshow: onshow, onstalled: onstalled, onsubmit: onsubmit, onsuspend: onsuspend,
+  ontimeupdate: ontimeupdate, ontoggle: ontoggle, onvolumechange: onvolumechange, onwaiting: onwaiting,
+  disabled: disabled, crossorigin: crossorigin, hreflang: hreflang, form: form, maxlength: maxlength,
+  minlength: minlength, placeholder: placeholder, readonly: readonly, required: required,
+  coords: coords, download: download, href: href, rel: rel, shape: shape, target: target,
+  preload: preload, autoplay: autoplay, mediagroup: mediagroup, loop: loop, muted: muted,
+  controls: controls, poster: poster, onafterprint: onafterprint, onbeforeprint: onbeforeprint,
+  onbeforeunload: onbeforeunload, onhashchange: onhashchange, onmessage: onmessage, onoffline: onoffline,
+  ononline: ononline, onpagehide: onpagehide, onpageshow: onpageshow, onpopstate: onpopstate,
+  onstorage: onstorage, onunload: onunload, open: open, action: action, enctype: enctype,
+  novalidate: novalidate, srcdoc: srcdoc, sandbox: sandbox, usemap: usemap, ismap: ismap,
+  accept: accept, alt: alt, autocomplete: autocomplete, autofocus: autofocus, checked: checked,
+  dirname: dirname, formaction: formaction, formenctype: formenctype, formmethod: formmethod,
+  formnovalidate: formnovalidate, formtarget: formtarget, inputmode: inputmode, list: list, max: max,
+  min: min, multiple: multiple, pattern: pattern, size: size, step: step, value: value,
+  content: content, behavior: behavior, bgcolor: bgcolor, direction: direction,
+  hspace: hspace, scrollamount: scrollamount, scrolldelay: scrolldelay,
+  truespeed: truespeed, vspace: vspace, onbounce: onbounce, onfinish: onfinish,
+  onstart: onstart, optimum: optimum, selected: selected, colspan: colspan,
+  rowspan: rowspan, headers: headers, cols: cols, rows: rows, wrap: wrap,
+  integrity: integrity, media: media, referrerpolicy: referrerpolicy, sizes: sizes,
+  `type`: `type`, `for`: `for`, `async`: `async`, `defer`: `defer`, children: @children) """
 
 func `$`*(this: HtmlNode): string =
   result = $this.kind & ": "
@@ -277,22 +345,18 @@ func closeTag(this: HtmlNode): string {.inline.} =
   result = case this.kind ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
     of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr, nkComment: ""  # These tags dont need Closing Tag.
     of nkHtml: static(when defined(release): "</html>" else: "</html>\n<!-- Powered by Nim " & NimVersion & " https://nim-lang.org  -->\n")
-    else:
-      when defined(release): "</" & $this.kind & ">" else: "\n</" & $this.kind & ">\n"
+    else: (when defined(release): "</" & $this.kind & ">" else: "\n</" & $this.kind & ">\n")
+
+macro autogenAllTheProcs() =
+  var allTheProcs: string
+  for item in HtmlNodeKind:
+    if item in [nkComment, nkBody, nkHead, nkDiv, nkObject, nkTemplate, nkVar, nkHtml]: continue else: allTheProcs.add procTemplate.format($item) & "\n"
+  parseStmt allTheProcs
+
+autogenAllTheProcs()
 
 
 
-
-
-
-
-
-
-
-
-
-func p*(x: varargs[string, `$`]): HtmlNode =
-  result = HtmlNode(kind: nkP, text: (@x).join(" "))
 
 
 func newDiv*(children: varargs[HtmlNode]): HtmlNode =
@@ -304,21 +368,6 @@ macro dv*(inner: untyped): HtmlNode =
   if inner.len == 1:
     result.add(inner)
   inner.copyChildrenTo(result)
-
-
-
-
-
-func a*(href, text: string, id="", class="", rel=""): HtmlNode {.inline.} =
-  result = HtmlNode(kind: nkA, href: href, text: text)
-  result.id = id
-  result.class = class
-  result.rel = rel
-
-func meta*(name, content: string, httpequiv=""): HtmlNode {.inline.} = HtmlNode(kind: nkMeta, name: name, content: content, httpequiv: httpequiv) ## Create a new ``<meta>`` tag Node with name,content,httpequiv. No children.
-func title*(titulo: string): HtmlNode {.inline.} = HtmlNode(kind: nkTitle, text: titulo.strip.capitalizeAscii) ## Create a new ``<title>`` tag Node with text string, title is Capitalized.
-func link*(href: string, hreflang="", crossorigin="", integrity="", media="", referrerpolicy="", sizes=""): HtmlNode {.inline.} =
-  HtmlNode(kind: nkLink, href: href, crossorigin: crossorigin, integrity: integrity, media: media, referrerpolicy: referrerpolicy, sizes: sizes, hreflang: hreflang)
 
 func newHead(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link) ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
 
