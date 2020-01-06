@@ -79,7 +79,7 @@ func `$`*(this: HtmlNode): string =
   if this.children.len > 0:
     for tag in this.children: result &= "\n" & $tag
 
-func attributter(t: HtmlNode): string =
+func setAttributes(t: HtmlNode): string =
   result = " "
   if t.hidden.len > 0:              result.add "hidden " # Just adds HTML attributes for tags.
   if t.spellcheck.len > 0:          result.add "spellcheck "
@@ -239,7 +239,7 @@ func attributter(t: HtmlNode): string =
 
 func openTag(this: HtmlNode): string =
   const n = when defined(release): ">" else: ">\n" # Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
-  let atributos = if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]: attributter(this) else: ""
+  let atributos = if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]: setAttributes(this) else: ""
   result = case this.kind
     of nkHtml:     static("<!DOCTYPE html" & n & "<html class='has-navbar-fixed-top'" & n)
     of nkHead:     static("<head" & n) & basicHeadTags
