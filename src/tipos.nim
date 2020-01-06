@@ -232,96 +232,51 @@ func attributter(t: HtmlNode): string =
     if unlikely(t.contenteditable): x.add """contenteditable="true" """
   result = x.join.strip(leading=false)
 
-func openTag(this: HtmlNode): string {.discardable.} =
+func openTag(this: HtmlNode): string {.used.} =
   ## Render the HtmlNode to String,tag-by-tag,Bulma & Spectre support added here
+  const n = when defined(release): ">" else: ">\n"
   let atributos = if this.kind notin [nkHtml, nkHead, nkTitle, nkBody, nkComment]: attributter(this) else: ""
   result = case this.kind
-    of nkHtml:
-      when defined(release): "<!DOCTYPE html><html class='has-navbar-fixed-top'>"
-      else: "<!DOCTYPE html>\n  <html class='has-navbar-fixed-top'>\n"
-    of nkHead:
-      when defined(release): "<head>" & basicHeadTags
-      else: "<head>\n  " & basicHeadTags
-    of nkTitle:
-      when defined(release): "<title>" & this.text & "</title>"
-      else: "<title>" & this.text & "</title>\n"
-    of nkMeta:
-      when defined(release): "<meta" & atributos & ">"
-      else: "<meta" & atributos & ">\n"
-    of nkLink:
-      when defined(release): "<link" & atributos & ">"
-      else: "<link" & atributos & ">\n"
-    of nkBody:
-      when defined(release): "<body class='has-navbar-fixed-top'>"
-      else: "<body class='has-navbar-fixed-top'>\n"
-    of nkArticle:
-      when defined(release): "<article class='message'" & atributos & ">"
-      else: "<article class='message'" & atributos & ">\n"
-    of nkButton: "<button class='button is-light is-rounded btn tooltip'" & atributos & ">" & this.text
-    of nkDetails:
-      when defined(release): "<details class='message is-dark'" & atributos & ">"
-      else: "<details class='message is-dark'" & atributos & ">\n"
-    of nkSummary: "<summary class='message-header is-dark'" & atributos & ">" & this.text
-    of nkDialog:
-      when defined(release): "<dialog class='notification is-rounded modal'" & atributos & ">"
-      else: "<dialog class='notification is-rounded modal'" & atributos & ">\n"
-    of nkFooter:
-      when defined(release): "<footer class='footer is-fullwidth'" & atributos & ">"
-      else: "<footer class='footer is-fullwidth'" & atributos & ">\n"
-    of nkH1:
-      when defined(release): "<h1 class='title'" & atributos & ">"
-      else: "<h1 class='title'" & atributos & ">\n"
-    of nkImg:
-      when defined(release): "<img class='image img-responsive'" & atributos & ">"
-      else: "<img class='image img-responsive'" & atributos & ">\n"
-    of nkLabel:
-      when defined(release): "<label class='label form-label'" & atributos & ">"
-      else: "<label class='label form-label'" & atributos & ">\n"
-    of nkMeter:
-      when defined(release): "<meter class='progress is-small bar-item' role='progressbar'" & atributos & ">"
-      else: "<meter class='progress is-small bar-item' role='progressbar'" & atributos & ">\n"
-    of nkProgress:
-      when defined(release): "<progress class='progress is-small bar-item' role='progressbar'" & atributos & ">"
-      else: "<progress class='progress is-small bar-item' role='progressbar'" & atributos & ">\n"
-    of nkSection:
-      when defined(release): "<section class='section'" & atributos & ">"
-      else: "<section class='section'" & atributos & ">\n"
-    of nkSelect:
-      when defined(release): "<select class='select is-primary is-rounded is-small form-select'" & atributos & ">"
-      else: "<select class='select is-primary is-rounded is-small form-select'" & atributos & ">\n"
-    of nkTable:
-      when defined(release): "<table class='table is-bordered is-striped is-hoverable table-striped table-hover'" & atributos & ">"
-      else: "<table class='table is-bordered is-striped is-hoverable table-striped table-hover'" & atributos & ">\n"
-    of nkFigure:
-      when defined(release): "<figure class='figure figure-caption text-center'" & atributos & ">" & this.text
-      else: "<figure class='figure figure-caption text-center'" & atributos & ">\n" & this.text
-    of nkPre:
-      when defined(release): "<pre class='code'" & atributos & ">" & this.text
-      else: "<pre class='code'" & atributos & ">\n" & this.text
-    of nkVideo:
-      when defined(release): "<video class='video-responsive'" & atributos & ">"
-      else: "<video class='video-responsive'" & atributos & ">\n"
-    of nkCenter:
-      when defined(release): "<center class='is-centered'" & atributos & ">" & this.text
-      else: "<center class='is-centered'" & atributos & ">\n" & this.text
-    of nkInput:
-      when defined(release): "<input class='input is-primary form-input' dir=\"auto\" " & atributos & ">"
-      else: "<input class='input is-primary form-input' dir=\"auto\" " & atributos & ">\n"
-    of nkTextarea:
-      when defined(release): "<textarea class='textarea is-primary form-input' dir=\"auto\" " & atributos & ">"
-      else: "<textarea class='textarea is-primary form-input' dir=\"auto\" " & atributos & ">\n"
-    of nkNav:
-      when defined(release): "<nav class='navbar is-fixed-top is-light' role=\"navigation\"" & atributos & ">"
-      else: "<nav class='navbar is-fixed-top is-light' role=\"navigation\"" & atributos & ">\n"
-    of nkHr: "<hr>"
-    of nkBr: "<br>"
-    of nkComment: when defined(release): "" else: "\n\n<!--  " & this.text & "  -->\n\n"
-    else: "<" & $this.kind & atributos & ">" & this.text
+    of nkHtml:     static("<!DOCTYPE html" & n & "<html class='has-navbar-fixed-top'" & n)
+    of nkHead:     static("<head" & n) & basicHeadTags
+    of nkTitle:    "<title>" & this.text & static("</title" & n)
+    of nkMeta:     "<meta" & atributos & n
+    of nkLink:     "<link" & atributos & n
+    of nkBody:     static("<body class='has-navbar-fixed-top'" & n)
+    of nkArticle:  "<article class='message'" & atributos & n
+    of nkButton:   "<button class='button is-light is-rounded btn tooltip'" & atributos & n & this.text
+    of nkDetails:  "<details class='message is-dark'" & atributos & n
+    of nkSummary:  "<summary class='message-header is-dark'" & atributos & n & this.text
+    of nkDialog:   "<dialog class='notification is-rounded modal'" & atributos & n
+    of nkFooter:   "<footer class='footer is-fullwidth'" & atributos & n
+    of nkH1:       "<h1 class='title'" & atributos & n
+    of nkImg:      "<img class='image img-responsive'" & atributos & n
+    of nkLabel:    "<label class='label form-label'" & atributos & n
+    of nkMeter:    "<meter class='progress is-small bar-item' role='progressbar'" & atributos & n
+    of nkProgress: "<progress class='progress is-small bar-item' role='progressbar'" & atributos & n
+    of nkSection:  "<section class='section'" & atributos & n
+    of nkSelect:   "<select class='select is-primary is-rounded is-small form-select'" & atributos & n
+    of nkTable:    "<table class='table is-bordered is-striped is-hoverable table-striped table-hover'" & atributos & n
+    of nkFigure:   "<figure class='figure figure-caption text-center'" & atributos & n & this.text
+    of nkPre:      "<pre class='code'" & atributos & n & this.text
+    of nkVideo:    "<video class='video-responsive'" & atributos & n
+    of nkCenter:   "<center class='is-centered'" & atributos & n & this.text
+    of nkInput:    "<input class='input is-primary form-input' dir='auto' " & atributos & n
+    of nkTextarea: "<textarea class='textarea is-primary form-input' dir='auto' " & atributos & n
+    of nkNav:      "<nav class='navbar is-fixed-top is-light' role='navigation'" & atributos & n
+    of nkHr:       static("<hr" & n)
+    of nkBr:       static("<br" & n)
+    of nkComment:
+      when defined(release): "" else: "\n\n<!--  " & this.text & "  -->\n\n"
+    else: "<" & $this.kind & atributos & n & this.text
 
-func closeTag(this: HtmlNode): string {.inline, discardable.} =
+func closeTag(this: HtmlNode): string {.inline, used.} =
   ## Render the Closing tag of each HtmlNode to String, tag-by-tag.
-  case this.kind
-  of nkHtml:    result = when defined(release): "</html>" else: "</html>\n<!-- Nim " & NimVersion & " -->\n"
-  of nkComment: result = when defined(release): "" else: "  -->\n\n"
-  of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr: result = ""  # These tags dont need Closing Tag.
-  else: result = when defined(release): "</" & $this.kind & ">" else: "</" & $this.kind & ">\n"
+  result = case this.kind
+    of nkTitle, nkMeta, nkLink, nkImg, nkInput, nkBr, nkHr: ""  # These tags dont need Closing Tag.
+    of nkHtml:
+      when defined(release): "</html>" else: "</html>\n<!-- Nim " & NimVersion & " -->\n"
+    of nkComment:
+      when defined(release): "" else: "  -->\n\n"
+    else:
+      when defined(release): "</" & $this.kind & ">" else: "\n</" & $this.kind & ">\n"
