@@ -1,17 +1,9 @@
 import html_dsl
 
-when isMainModule:
-  html page:
-    head:
-      title "Title"
-      meta(name="foo", href="bar")
-      link(href="href")
-    body:
-      p(text="Hello")
-      p(text="World")
-      `<!--`("wtf lol")
-      a(text="WTF", src="a")
-      divs:
-        p("Example")
+const page = html:
+  heads:
+    title "Title"
+  bodys:
+    p "Powered by Nim Metaprogramming"
 
-  echo render(page())
+echo page
