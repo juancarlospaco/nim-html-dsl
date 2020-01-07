@@ -364,7 +364,6 @@ func `<!--`*(text: string): HtmlNode {.inline.} = HtmlNode(kind: nkComment, text
 func newDiv*(children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkDiv, children: @children)
 
 macro divs*(inner: untyped): HtmlNode =
-  assert inner.len >= 1, "Div Error: Wrong number of inner elements:" & $inner.len # <div> is named "divs"
   result = newCall("newDiv")
   if inner.len == 1: result.add inner
   inner.copyChildrenTo(result)
