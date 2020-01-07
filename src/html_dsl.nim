@@ -146,7 +146,7 @@ func setAttributes(t: HtmlNode): string =
   if t.`defer`.len > 0:             result.add "defer "
   if t.selected.len > 0:            result.add "selected "
   if unlikely(t.width != 0):        result.add "width=\""            & $t.width           & "\" "
-  if unlikely(t.height != 0):       result.add "width='"             & $t.height          & "\" "
+  if unlikely(t.height != 0):       result.add "width=\""            & $t.height          & "\" "
   if t.id.len > 0:                  result.add "id=\""               & t.id               & "\" "
   if t.class.len > 0:               result.add "class=\""            & t.class            & "\" "
   if t.name.len > 0:                result.add "name=\""             & t.name             & "\" "
