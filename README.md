@@ -1,6 +1,6 @@
 # Nim-HTML-DSL
 
-- [Nim](https://nim-lang.org) HTML DSL, [Domain Specific Language](https://en.wikipedia.org/wiki/Domain-specific_language) for HTML embedded on Nim lang code (Not a template engine). **This project still WIP**
+- [Nim](https://nim-lang.org) HTML DSL, [Domain Specific Language](https://en.wikipedia.org/wiki/Domain-specific_language) for HTML embedded on Nim lang code (Not a template engine).
 
 ![HTML DSL](https://raw.githubusercontent.com/juancarlospaco/nim-html-dsl/master/temp.png "HTML for Cats")
 
@@ -10,17 +10,21 @@
 ```nim
 import html_dsl
 
-html page:
-  head:
-    title("Title")
-  body:
-    p("Hello")
-    p("World")
-    dv:
-      p "Example"
-
-echo render(page())
+const page = html:
+  heads:
+    title "Title"
+    meta(name="foo", href="bar")
+    link(href="href")
+  bodys:
+    p(text="Hello")
+    p(text="World")
+    `<!--`("wtf lol")
+    a(text="WTF", src="a")
+    divs:
+      p("Example")
 ```
+
+- `page` is `string`, can be assigned to `const` or `let`.
 
 <details>
   <summary>Click to see Output</summary>
@@ -43,7 +47,6 @@ Build for Development:
     </div>
   </body>
 </html>
-<!-- Nim 0.19.0 -->
 
 ```
 
@@ -63,8 +66,8 @@ Build for Release:
 - Minified when build for Release, Pretty-Printed when build for Development.
 - [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), no side effects, all functions are `func`.
 - 255 Levels of indentation maximum.
-- HTML Comments supported.
-- No XHTML, dont be Valid XML but be HTML5.
+- HTML Comments are `<!--`.
+- `<div>` is named `divs`, `<body>` is named `bodys`, `<head>` is named `heads`, to avoid possible name shadowing with other libs.
 
 
 # FAQ
