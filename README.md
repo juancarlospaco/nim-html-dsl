@@ -63,7 +63,7 @@ Build for Release:
 
 # Design
 
-- `42` Kilobytes *Hello World* file size, as fast as `const`, 1 file, ~300 Lines of Code.
+- 1 file, ~300 Lines of Code, as fast as `const`, `42` Kilobytes *Hello World* file size.
 - Works for JavaScript and NodeJS and NimScript.
 - [Bulma CSS ready](https://bulma.io), [Spectre CSS ready](https://picturepan2.github.io/spectre/getting-started.html).
 - Minified when build for Release, Pretty-Printed when build for Development.
