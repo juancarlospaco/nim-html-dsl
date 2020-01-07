@@ -1,4 +1,3 @@
-## HTML-DSL: Nim HTML DSL, Domain Specific Language for HTML embedded on Nim lang code *(Not a template engine)*.
 import macros except body
 import strutils
 
@@ -59,7 +58,7 @@ type
     else: children: seq[HtmlNode]
 
 const
-  basicHeadTags = """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">""" # Basic meta tags that all frameworks recommend nowadays.
+  basicHeadTags = """<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">"""
   procTemplate = """func $1*(text = "", val = "", contenteditable = false, width = 0, height = 0,
   id = "", class = "", name = "", accesskey = "", src = "", tabindex = "",
   translate = "", hidden = "", httpequiv = "", lang = "", role = "",
@@ -129,11 +128,6 @@ const
   rowspan: rowspan, headers: headers, cols: cols, rows: rows, wrap: wrap,
   integrity: integrity, media: media, referrerpolicy: referrerpolicy, sizes: sizes,
   `type`: `type`, `for`: `for`, `async`: `async`, `defer`: `defer`, children: @children) """
-
-func `$`*(this: HtmlNode): string =
-  result = $this.kind & ": "
-  if this.children.len > 0:
-    for tag in this.children: result &= "\n" & $tag
 
 func setAttributes(t: HtmlNode): string =
   result = " "
@@ -334,49 +328,16 @@ func closeTag(this: HtmlNode): string {.inline.} =
 
 macro autogenAllTheProcs() =
   var allTheProcs: string
-  for item in HtmlNodeKind:
+  for item in HtmlNodeKind: # nkComment, nkBody, nkHead, nkDiv, nkHtml are special case.
     if item in [nkComment, nkBody, nkHead, nkDiv, nkHtml]: continue else: allTheProcs.add procTemplate.format($item) & "\n"
-  parseStmt allTheProcs
+  parseStmt allTheProcs # This generates a truckload of code.
 
 autogenAllTheProcs()
-
-func `<!--`*(text: string): HtmlNode {.inline.} = HtmlNode(kind: nkComment, text: text) # HTML Comment
-func newDiv*(children: varargs[HtmlNode]): HtmlNode = HtmlNode(kind: nkDiv, children: @children)
-
-macro divs*(inner: untyped): HtmlNode =
-  assert inner.len >= 1, "Div Error: Wrong number of inner elements:" & $inner.len
-  result = newCall("newDiv")
-  if inner.len == 1: result.add inner
-  inner.copyChildrenTo(result)
-
-func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link) ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
-
-macro head*(inner: untyped): HtmlNode =
-  assert inner.len >= 1, "Head Error: Wrong number of inner tags:" & $inner.len ## Macro to call ``newHead()`` with the childrens.
-  result = newCall("newHead")
-  if inner.len == 1: result.add inner
-  inner.copyChildrenTo(result)
-
-func newBody*(children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkBody, children: @children) ## Create a new ``<body>`` tag Node, containing all children tags.
-
-macro body*(inner: untyped): HtmlNode =
-  assert inner.len >= 1, "Body Error: Wrong number of inner tags:" & $inner.len ## Macro to call ``newBody()`` with the childrens, if any.
-  result = newCall("newBody") # Result is a call to newBody()
-  if inner.len == 1: result.add inner # if just 1 children just pass it as arg
-  inner.copyChildrenTo(result) # if several children copy them all, AST level.
-
-func newHtml*(head, body: HtmlNode): HtmlNode {.inline.} = HtmlNode(kind: nkHtml, head: head, body: body)
-
-macro html*(name: untyped, inner: untyped) =
-  let rs = newCall("newHtml", inner[0], inner[1])  # Call newHtml(head, body)
-  result = quote do: # inner is the whole content of the HTML DSL (head + body)
-    proc `name`(): HtmlNode {.inline.} = `rs` # Do name() = newHtml(head, body)
 
 template indentIfNeeded(thingy, indentationLevel: untyped): untyped =
   when defined(release): thingy else: indent(thingy, indentationLevel)
 
 func render*(this: HtmlNode): string =
-  ## Render HtmlNode with indentation return string.
   var indentationLevel: byte   # indent level, 0 ~ 255.
   result &= openTag this
   inc indentationLevel
@@ -398,3 +359,29 @@ func render*(this: HtmlNode): string =
       for tag in this.children: result &= indentIfNeeded(render(tag), indentationLevel)
   dec indentationLevel
   result &= closeTag this
+
+func `<!--`*(text: string): HtmlNode {.inline.} = HtmlNode(kind: nkComment, text: text) # HTML Comment
+func newDiv*(children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkDiv, children: @children)
+
+macro divs*(inner: untyped): HtmlNode =
+  assert inner.len >= 1, "Div Error: Wrong number of inner elements:" & $inner.len # <div> is named "divs"
+  result = newCall("newDiv")
+  if inner.len == 1: result.add inner
+  inner.copyChildrenTo(result)
+
+func newHead*(title: HtmlNode, meta: varargs[HtmlNode], link: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkHead, title: title, meta: @meta, link: @link) ## Create a new ``<head>`` tag Node with meta, link and title tag nodes.
+
+macro heads*(inner: untyped): HtmlNode =
+  result = newCall("newHead")
+  if inner.len == 1: result.add inner
+  inner.copyChildrenTo(result)
+
+func newBody*(children: varargs[HtmlNode]): HtmlNode {.inline.} = HtmlNode(kind: nkBody, children: @children) ## Create a new ``<body>`` tag Node, containing all children tags.
+
+macro bodys*(inner: untyped): HtmlNode =
+  result = newCall("newBody") # Result is a call to newBody()
+  if inner.len == 1: result.add inner # if just 1 children just pass it as arg
+  inner.copyChildrenTo(result) # if several children copy them all, AST level.
+
+func newHtml*(head, body: HtmlNode): HtmlNode {.inline.} = HtmlNode(kind: nkHtml, head: head, body: body)
+macro html*(inner: untyped): string = newCall("render", newCall("newHtml", inner[0], inner[1]))
