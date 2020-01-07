@@ -340,7 +340,7 @@ template indentIfNeeded(thingy, indentationLevel: untyped): untyped =
 func render*(this: HtmlNode): string =
   var indentationLevel: byte   # indent level, 0 ~ 255.
   result &= openTag this
-  inc indentationLevel
+  inc indentationLevel, 2
   case this.kind
   of nkHtml:                    # <html>
     result &= indentIfNeeded(render(this.head), indentationLevel)
@@ -357,7 +357,7 @@ func render*(this: HtmlNode): string =
   else:
     if this.children.len > 0:
       for tag in this.children: result &= indentIfNeeded(render(tag), indentationLevel)
-  dec indentationLevel
+  dec indentationLevel, 2
   result &= closeTag this
 
 func `<!--`*(text: string): HtmlNode {.inline.} = HtmlNode(kind: nkComment, text: text) # HTML Comment

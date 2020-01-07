@@ -13,18 +13,17 @@ import html_dsl
 const page = html:
   heads:
     title "Title"
-    meta(name="foo", href="bar")
-    link(href="href")
+    meta(name="foo", content="bar")
   bodys:
-    p(text="Hello")
-    p(text="World")
-    `<!--`("wtf lol")
-    a(text="WTF", src="a")
+    p "Powered by Nim Metaprogramming"
+    `<!--` "HTML Comment"
+    a(text="Nim", href="https://nim-lang.org")
     divs:
-      p("Example")
-```
+      p "Example"
 
-- `page` is `string`, can be assigned to `const` or `let`.
+assert page is string
+echo page
+```
 
 <details>
   <summary>Click to see Output</summary>
@@ -33,17 +32,20 @@ Build for Development:
 
 ```html
 <!DOCTYPE html>
-  <html class='has-navbar-fixed-top' >
+<html class='has-navbar-fixed-top'>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="foo" content="bar" >
     <title>Title</title>
   </head>
-  <body class='has-navbar-fixed-top' >
-    <p >Hello</p>
-    <p >World</p>
-    <div>
-      <p>Example</p>
+  <body class='has-navbar-fixed-top'>
+    <p > Powered by Nim Metaprogramming</p>
+
+    <!--  HTML Comment  -->
+
+    <a href="https://nim-lang.org" > Nim</a>
+    <div >
+      <p > Example</p>
+      <p > Example</p>
     </div>
   </body>
 </html>
@@ -53,7 +55,7 @@ Build for Development:
 Build for Release:
 
 ```html
-<!DOCTYPE html><html class='has-navbar-fixed-top'><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Title</title></head><body class='has-navbar-fixed-top'><p>Hello</p><p>World</p><div><p>Example</p></div></body></html>
+<!DOCTYPE html><html class='has-navbar-fixed-top'><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="foo" content="bar" ><title>Title</title></head><body class='has-navbar-fixed-top'><p>Powered by Nim Metaprogramming</p><a href="https://nim-lang.org" >Nim</a><div><p>Example</p><p>Example</p></div></body></html>
 ```
 
 </details>
@@ -61,13 +63,14 @@ Build for Release:
 
 # Design
 
+- `42` Kilobytes *Hello World* file size, as fast as `const`, ~300 Lines of Code.
+- Works for JavaScript and NodeJS and NimScript.
 - [Bulma CSS ready](https://bulma.io), [Spectre CSS ready](https://picturepan2.github.io/spectre/getting-started.html).
-- HTML5, UTF-8, Responsive, all Tags supported.
 - Minified when build for Release, Pretty-Printed when build for Development.
-- [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), no side effects, all functions are `func`.
+- [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), no side-effects, all functions are `func`.
 - 255 Levels of indentation maximum.
-- HTML Comments are `<!--`.
-- `<div>` is named `divs`, `<body>` is named `bodys`, `<head>` is named `heads`, to avoid possible name shadowing with other libs.
+- `<div>` is named `divs`, `<body>` is named `bodys`, `<head>` is named `heads`, to avoid eventual name shadowing with other libs.
+- HTML5, UTF-8, Responsive, all Tags supported.
 
 
 # FAQ
