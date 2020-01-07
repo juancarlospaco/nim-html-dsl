@@ -63,14 +63,13 @@ Build for Release:
 
 # Design
 
-- `42` Kilobytes *Hello World* file size, as fast as `const`, ~300 Lines of Code.
+- `42` Kilobytes *Hello World* file size, as fast as `const`, 1 file, ~300 Lines of Code.
 - Works for JavaScript and NodeJS and NimScript.
 - [Bulma CSS ready](https://bulma.io), [Spectre CSS ready](https://picturepan2.github.io/spectre/getting-started.html).
 - Minified when build for Release, Pretty-Printed when build for Development.
 - [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming), no side-effects, all functions are `func`.
-- 255 Levels of indentation maximum.
 - `<div>` is named `divs`, `<body>` is named `bodys`, `<head>` is named `heads`, to avoid eventual name shadowing with other libs.
-- HTML5, UTF-8, Responsive, all Tags supported.
+- HTML5, UTF-8, Responsive, all Tags supported, all Attributes supported.
 
 
 # FAQ
